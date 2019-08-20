@@ -9,7 +9,7 @@
 
     <ImageButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" app:srcCompat="@drawable/btn_off"
+            android:layout_height="wrap_content" app:srcCompat="@drawable/button_off_state"
             android:id="@+id/main_btn"
             android:background="@android:color/transparent" app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="8dp" app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="8dp"

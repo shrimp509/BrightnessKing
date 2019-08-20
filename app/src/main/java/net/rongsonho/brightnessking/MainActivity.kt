@@ -3,7 +3,6 @@ package net.rongsonho.brightnessking
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageButton
-import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
     lateinit var btn : ImageButton
@@ -18,9 +17,9 @@ class MainActivity : AppCompatActivity() {
         btn.setOnClickListener{
             isActivate = !isActivate
             if (isActivate){
-                btn.setImageResource(R.drawable.btn_on)
+                btn.setImageResource(R.drawable.button_on_state)
             }else{
-                btn.setImageResource(R.drawable.btn_off)
+                btn.setImageResource(R.drawable.button_off_state)
             }
         }
     }
