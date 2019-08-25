@@ -1,22 +1,42 @@
 package net.rongsonho.brightnessking
 
 import android.animation.Animator
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.*
 import android.graphics.Typeface
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.IBinder
+import android.provider.Settings
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 
+private const val RC_WRITE_SETTING = 0
+private const val RC_SYSTEM_OVERLAY = 1
+private const val TAG = "MainActivity"
+
 class MainActivity : AppCompatActivity() {
-    lateinit var btn : ImageButton
-    var isActivate : Boolean = false
+    private lateinit var btn : ImageButton
+    private val storageHelper = StorageHelper(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        checkPermissions()
+
         initView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        storageHelper.setIsActivate(false)
+        unbindService()
     }
 
     private fun initView(){
@@ -28,14 +48,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initBrightnessOnOffButton(){
-
-        // TODO: use shared preference
         btn = findViewById(R.id.main_btn)
-        btn.setOnClickListener{
-            isActivate = !isActivate
-            if (isActivate){
+        btn.setOnClickListener {
+            changeState(true)
+        }
+    }
+
+    private fun changeState(change : Boolean) {
+        // get current state
+        var currentState = storageHelper.getIsActivate()
+        Log.d(TAG, "current state: $currentState")
+
+        // change state if necessary
+        if (change) {
+            storageHelper.setIsActivate(!currentState)
+            currentState = storageHelper.getIsActivate()
+            Log.d(TAG, "change state true, current state: $currentState")
+
+            // set btn appearance and service state
+            if (currentState) {
+                bindService()
                 btn.setImageResource(R.drawable.button_on_state)
-            }else{
+            }else {
+                unbindService()
                 btn.setImageResource(R.drawable.button_off_state)
             }
         }
@@ -76,5 +111,55 @@ class MainActivity : AppCompatActivity() {
 
     private fun setTypeFace(view : TextView){
         view.typeface = Typeface.createFromAsset(assets, resources.getString(R.string.main_title_typeface))
+    }
+
+    private fun checkPermissions(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.System.canWrite(this)) {
+                val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:$packageName"))
+                startActivityForResult(intent, RC_WRITE_SETTING)
+            }
+
+            if (!Settings.canDrawOverlays(this)) {
+                val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+                startActivityForResult(intent, RC_SYSTEM_OVERLAY)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == Activity.RESULT_CANCELED) {
+            AlertDialog.Builder(this)
+                .setTitle(resources.getString(R.string.main_alert_dialog_title_permissions_denied))
+                .setMessage(resources.getString(R.string.main_alert_dialog_message_permissions_denied))
+                .setPositiveButton(resources.getString(R.string.main_alert_dialog_ok_permissions_denied)) { _ , _ ->
+                    checkPermissions()
+                } .create()
+                .show()
+        }
+    }
+
+    private fun bindService() {
+        Log.d(TAG, "bindService")
+        val intent = Intent(this, BrightnessService::class.java)
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindService() {
+        Log.d(TAG, "unbindService")
+        unbindService(serviceConnection)
+    }
+
+    private val serviceConnection = object : ServiceConnection{
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            storageHelper.setIsActivate(false)
+        }
+
+        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
+            storageHelper.setIsActivate(true)
+        }
+
     }
 }
