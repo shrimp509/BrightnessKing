@@ -35,8 +35,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        storageHelper.setIsActivate(false)
-        unbindService()
     }
 
     private fun initView(){
@@ -49,29 +47,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun initBrightnessOnOffButton(){
         btn = findViewById(R.id.main_btn)
-        btn.setOnClickListener {
-            changeState(true)
+
+        // update button state first
+        if (storageHelper.getIsActivate()) {
+            btn.setImageResource(R.drawable.button_on_state)
+        }else {
+            btn.setImageResource(R.drawable.button_off_state)
         }
-    }
 
-    private fun changeState(change : Boolean) {
-        // get current state
-        var currentState = storageHelper.getIsActivate()
-        Log.d(TAG, "current state: $currentState")
-
-        // change state if necessary
-        if (change) {
-            storageHelper.setIsActivate(!currentState)
-            currentState = storageHelper.getIsActivate()
-            Log.d(TAG, "change state true, current state: $currentState")
-
-            // set btn appearance and service state
-            if (currentState) {
-                bindService()
-                btn.setImageResource(R.drawable.button_on_state)
-            }else {
-                unbindService()
+        // set action
+        val brightnessService = Intent(this, BrightnessService::class.java)
+        btn.setOnClickListener {
+            if (storageHelper.getIsActivate()) {
+                stopService(brightnessService)
                 btn.setImageResource(R.drawable.button_off_state)
+            }else {
+                startService(brightnessService)
+                btn.setImageResource(R.drawable.button_on_state)
             }
         }
     }
@@ -144,7 +136,8 @@ class MainActivity : AppCompatActivity() {
     private fun bindService() {
         Log.d(TAG, "bindService")
         val intent = Intent(this, BrightnessService::class.java)
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+//        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        startService(intent)
     }
 
     private fun unbindService() {

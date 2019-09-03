@@ -1,23 +1,21 @@
 package net.rongsonho.brightnessking
 
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
+import android.preference.PreferenceManager
 
-private const val FILE_NAME = "shared_preference"
 private const val STATE_KEY = "activate_state"
 
-class StorageHelper(context : Context) {
-    private val context = context
+class StorageHelper(private val context : Context) {
 
     fun setIsActivate(activate : Boolean){
-        context.getSharedPreferences(FILE_NAME, MODE_PRIVATE)
+        PreferenceManager.getDefaultSharedPreferences(context)
             .edit()
             .putBoolean(STATE_KEY, activate)
             .apply()
     }
 
     fun getIsActivate() : Boolean{
-        return context.getSharedPreferences(FILE_NAME, MODE_PRIVATE)
+        return PreferenceManager.getDefaultSharedPreferences(context)
             .getBoolean(STATE_KEY, false)
     }
 }

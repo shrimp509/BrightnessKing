@@ -31,6 +31,7 @@ public class BrightnessService extends Service {
 
     private Toast mLastToast;
     private LinearLayout mLinearLayout;
+    private StorageHelper mDatabase;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -83,6 +84,11 @@ public class BrightnessService extends Service {
         mGestureDetector = new GestureDetector(this, new MyGestureListener());
 
         mLinearLayout.setOnTouchListener(mTouchListener);
+
+
+        // set storage helper
+        mDatabase = new StorageHelper(getApplicationContext());
+        mDatabase.setIsActivate(true);
     }
 
     private View.OnTouchListener mTouchListener = new View.OnTouchListener(){
@@ -104,20 +110,21 @@ public class BrightnessService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         Log.d(TAG, "onDestroy");
+
         if (mLinearLayout != null){
             mWindowManager.removeView(mLinearLayout);
         }
 
-        // stop
-        stopSelf();
+        mDatabase.setIsActivate(false);
+
+        super.onDestroy();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand");
-        return START_STICKY_COMPATIBILITY;
+        return START_STICKY;
     }
 
     @Override
