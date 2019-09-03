@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">BrightnessKing</string>
+    <string name="app_name">超級亮度王</string>
+
+    <string name="main_title_typeface">TaipeiSansTCBeta-Bold.ttf</string>
+    <string name="main_alert_dialog_title_permissions_denied">權限要求</string>
+    <string name="main_alert_dialog_message_permissions_denied">這些權限需要您的允許，才能正常運作</string>
+    <string name="main_alert_dialog_ok_permissions_denied">好</string>
+
+
 </resources>
