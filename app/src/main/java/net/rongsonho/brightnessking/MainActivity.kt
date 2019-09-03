@@ -15,6 +15,7 @@ import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import com.crashlytics.android.Crashlytics
 
 private const val RC_WRITE_SETTING = 0
 private const val RC_SYSTEM_OVERLAY = 1
@@ -22,7 +23,7 @@ private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var btn : ImageButton
-    private val storageHelper = StorageHelper(this)
+    private lateinit var storageHelper : StorageHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,10 +31,14 @@ class MainActivity : AppCompatActivity() {
 
         checkPermissions()
 
+        storageHelper = StorageHelper(this)
+        storageHelper.setIsActivate(false)
+
         initView()
     }
 
     override fun onDestroy() {
+        Log.d(TAG, "onDestroy")
         super.onDestroy()
     }
 
@@ -62,7 +67,11 @@ class MainActivity : AppCompatActivity() {
                 stopService(brightnessService)
                 btn.setImageResource(R.drawable.button_off_state)
             }else {
-                startService(brightnessService)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startForegroundService(brightnessService)
+                }else {
+                    startService(brightnessService)
+                }
                 btn.setImageResource(R.drawable.button_on_state)
             }
         }
