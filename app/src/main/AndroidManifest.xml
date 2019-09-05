@@ -23,6 +23,11 @@
             </intent-filter>
         </activity>
 
+        <receiver android:name=".RestartReceiver">
+            <intent-filter>
+                <action android:name="Restart"/>
+            </intent-filter>
+        </receiver>
         <service android:name=".BrightnessService"/>
 
     </application>

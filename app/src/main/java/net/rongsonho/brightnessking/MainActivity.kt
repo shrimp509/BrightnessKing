@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         checkPermissions()
 
         storageHelper = StorageHelper(this)
-        storageHelper.setIsActivate(false)
 
         initView()
     }
@@ -53,6 +52,27 @@ class MainActivity : AppCompatActivity() {
     private fun initBrightnessOnOffButton(){
         btn = findViewById(R.id.main_btn)
 
+        // FORCE to set the activate state to false
+        btn.setOnLongClickListener {
+            storageHelper.setIsActivate(false)
+            true
+        }
+
+        // test the broadcast receiver is working or not // TODO: remember to delete it after testing
+        val title = findViewById<TextView>(R.id.main_title)
+        title.setOnClickListener{
+            sendBroadcast(
+                Intent(this, RestartReceiver::class.java).setAction("Restart")
+            )
+        }
+
+        // test not on purpose close service // TODO: remember to delete it after testing
+        title.setOnLongClickListener {
+            storageHelper.setOnPurpose(true)
+            stopService(Intent(this, BrightnessService::class.java))
+            true
+        }
+
         // update button state first
         if (storageHelper.getIsActivate()) {
             btn.setImageResource(R.drawable.button_on_state)
@@ -64,13 +84,19 @@ class MainActivity : AppCompatActivity() {
         val brightnessService = Intent(this, BrightnessService::class.java)
         btn.setOnClickListener {
             if (storageHelper.getIsActivate()) {
-                stopService(brightnessService)
+                storageHelper.setOnPurpose(false)
+                Thread {
+                    Thread.sleep(50)
+                    stopService(brightnessService)
+                }.start()
                 btn.setImageResource(R.drawable.button_off_state)
             }else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(brightnessService)
+                    storageHelper.setOnPurpose(true)
                 }else {
                     startService(brightnessService)
+                    storageHelper.setOnPurpose(true)
                 }
                 btn.setImageResource(R.drawable.button_on_state)
             }

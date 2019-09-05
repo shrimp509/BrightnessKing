@@ -117,16 +117,6 @@ public class BrightnessService extends Service {
         }
     };
 
-
-    // TODO: Not sure how activity get window height and width
-    public int getWindowHeight(){
-        return rectHeight;
-    }
-
-    public int getWindowWidth(){
-        return rectWidth;
-    }
-
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
@@ -136,6 +126,14 @@ public class BrightnessService extends Service {
         }
 
         mDatabase.setIsActivate(false);
+        showToast("service is destroyed, on purpose? " + mDatabase.getOnPurpose());
+
+        if (mDatabase.getOnPurpose()) {
+            sendBroadcast(
+                    new Intent(this, RestartReceiver.class).setAction("Restart")
+            );
+            showToast("service try to restart itself");
+        }
 
         super.onDestroy();
     }
@@ -157,6 +155,7 @@ public class BrightnessService extends Service {
             mLastToast.cancel();
         }
 
+        Log.d(TAG, msg);
         mLastToast = Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT);
         mLastToast.show();
     }
