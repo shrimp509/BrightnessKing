@@ -7,14 +7,26 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
+ext {
+    //    1.0.0
+    versionMajor = 1
+    versionMinor = 0
+    versionPatch = 0
+
+    versionBuild = 1
+}
+
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "net.rongsonho.brightnessking"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+//        versionCode 1
+//        versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
