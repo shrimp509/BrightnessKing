@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">超級亮度王</string>
+    <string name="app_name">不完美的亮度王</string>
 
     <string name="main_title_typeface">TaipeiSansTCBeta-Bold.ttf</string>
     <string name="main_alert_dialog_title_permissions_denied">權限要求</string>

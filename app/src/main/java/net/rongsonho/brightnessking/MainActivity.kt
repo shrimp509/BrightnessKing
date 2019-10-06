@@ -59,19 +59,19 @@ class MainActivity : AppCompatActivity() {
         }
 
         // test the broadcast receiver is working or not // TODO: remember to delete it after testing
-        val title = findViewById<TextView>(R.id.main_title)
-        title.setOnClickListener{
-            sendBroadcast(
-                Intent(this, RestartReceiver::class.java).setAction("Restart")
-            )
-        }
-
-        // test not on purpose close service // TODO: remember to delete it after testing
-        title.setOnLongClickListener {
-            storageHelper.setOnPurpose(true)
-            stopService(Intent(this, BrightnessService::class.java))
-            true
-        }
+//        val title = findViewById<TextView>(R.id.main_title)
+//        title.setOnClickListener{
+//            sendBroadcast(
+//                Intent(this, RestartReceiver::class.java).setAction("Restart")
+//            )
+//        }
+//
+//        // test not on purpose close service // TODO: remember to delete it after testing
+//        title.setOnLongClickListener {
+//            storageHelper.setOnPurpose(true)
+//            stopService(Intent(this, BrightnessService::class.java))
+//            true
+//        }
 
         // update button state first
         if (storageHelper.getIsActivate()) {

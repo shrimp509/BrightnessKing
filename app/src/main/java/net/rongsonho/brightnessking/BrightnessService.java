@@ -20,6 +20,7 @@ import android.view.*;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.core.app.NotificationCompat;
+import com.crashlytics.android.Crashlytics;
 
 public class BrightnessService extends Service {
     private static final String TAG = "BrightnessService";
@@ -37,6 +38,8 @@ public class BrightnessService extends Service {
     private Toast mLastToast;
     private LinearLayout mLinearLayout;
     private StorageHelper mDatabase;
+
+    private boolean toastOn = false;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -151,6 +154,9 @@ public class BrightnessService extends Service {
     }
 
     public void showToast(String msg){
+        if (!toastOn) {
+            return;
+        }
         if (mLastToast != null){
             mLastToast.cancel();
         }
