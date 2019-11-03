@@ -14,7 +14,6 @@ class RestartReceiver : BroadcastReceiver() {
 
     override fun onReceive(context : Context?, intent: Intent?) {
         val brightnessService = Intent(context, BrightnessService::class.java)
-        showToast(context, "onReceive, restart the service done.")
 
         if ("android.intent.action.BOOT_COMPLETED" == intent!!.action) {
             // check if service is running
@@ -25,7 +24,7 @@ class RestartReceiver : BroadcastReceiver() {
                     context.startService(brightnessService)
                 }
             }
-            showToast(context, "onReceive, restart the service done.")
+            showToast(context, "重新開啟不完美的亮度王中...")
         }
     }
 

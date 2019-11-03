@@ -5,9 +5,9 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
 ext {
-    //  1.0.0
+    //  1.1.0
     versionMajor = 1
-    versionMinor = 0
+    versionMinor = 1
     versionPatch = 0
 
     versionBuild = 1

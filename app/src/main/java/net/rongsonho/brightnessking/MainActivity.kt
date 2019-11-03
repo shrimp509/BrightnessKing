@@ -53,47 +53,15 @@ class MainActivity : AppCompatActivity() {
         btn = findViewById(R.id.main_btn)
 
         // update button state first
-        if (isMyServiceRunning()) {
-            btn.setImageResource(R.drawable.button_on_state)
-        }else {
-            btn.setImageResource(R.drawable.button_off_state)
-        }
+        btn.setImageResource(
+            if (isMyServiceRunning())
+                R.drawable.button_on_state
+            else R.drawable.button_off_state
+        )
 
         // set action
-        val brightnessService = Intent(this, BrightnessService::class.java)
         btn.setOnClickListener {
-            if (isMyServiceRunning()) {
-                // try to close service
-                Thread {
-                    Thread.sleep(50)
-                    val close = stopService(brightnessService)
-
-                    if (!close) {
-                        while (isMyServiceRunning()) {
-                            Thread.sleep(500)
-                            Log.d(TAG, "service isn't close yet")
-                            stopService(brightnessService)
-                            btn.setImageResource(R.drawable.button_off_state)
-                        }
-                    }else {
-                        btn.setImageResource(R.drawable.button_off_state)
-                    }
-                }.start()
-            }else {
-                // try to start service
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(brightnessService)
-                }else {
-                    startService(brightnessService)
-                }
-
-                // check service is running or not
-                if (isMyServiceRunning()) {
-                    btn.setImageResource(R.drawable.button_on_state)
-                }else {
-                    showToast("service isn't started")
-                }
-            }
+            setButtonBehavior()
         }
     }
 
@@ -153,10 +121,46 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-   private fun showToast(msg: String) {
+    private fun showToast(msg: String) {
        Log.d(TAG, "toast: $msg")
        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-   }
+    }
+
+    private fun setButtonBehavior() {
+        val brightnessService = Intent(this, BrightnessService::class.java)
+        if (isMyServiceRunning()) {
+            // try to close service
+            Thread {
+                Thread.sleep(50)
+                val close = stopService(brightnessService)
+
+                if (!close) {
+                    while (isMyServiceRunning()) {
+                        Thread.sleep(500)
+                        Log.d(TAG, "service isn't close yet")
+                        stopService(brightnessService)
+                        btn.setImageResource(R.drawable.button_off_state)
+                    }
+                }else {
+                    btn.setImageResource(R.drawable.button_off_state)
+                }
+            }.start()
+        }else {
+            // try to start service
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(brightnessService)
+            }else {
+                startService(brightnessService)
+            }
+
+            // check service is running or not
+            if (isMyServiceRunning()) {
+                btn.setImageResource(R.drawable.button_on_state)
+            }else {
+                showToast("service isn't started")
+            }
+        }
+    }
 
     private fun isMyServiceRunning(): Boolean {
         val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
