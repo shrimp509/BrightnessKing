@@ -1,5 +1,6 @@
 package net.rongsonho.brightnessking
 
+import android.app.ActivityManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -12,18 +13,35 @@ private const val TAG = "RestartReceiver"
 class RestartReceiver : BroadcastReceiver() {
 
     override fun onReceive(context : Context?, intent: Intent?) {
-        showToast(context, "onReceive, try to restart the service.")
         val brightnessService = Intent(context, BrightnessService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context!!.startForegroundService(brightnessService)
-        }else {
-            context!!.startService(brightnessService)
-        }
         showToast(context, "onReceive, restart the service done.")
+
+        if ("android.intent.action.BOOT_COMPLETED" == intent!!.action) {
+            // check if service is running
+            if (!isMyServiceRunning(context!!)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(brightnessService)
+                }else {
+                    context.startService(brightnessService)
+                }
+            }
+            showToast(context, "onReceive, restart the service done.")
+        }
     }
 
     private fun showToast(context: Context?, msg : String) {
         Log.d(TAG, msg)
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+    }
+
+    private fun isMyServiceRunning(context: Context): Boolean {
+        val manager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            Log.d(TAG, "service name: ${service.service.className}")
+            if (BrightnessService::class.java.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 }

@@ -37,7 +37,6 @@ public class BrightnessService extends Service {
 
     private Toast mLastToast;
     private LinearLayout mLinearLayout;
-    private StorageHelper mDatabase;
 
     private boolean toastOn = false;
 
@@ -93,11 +92,6 @@ public class BrightnessService extends Service {
 
         mLinearLayout.setOnTouchListener(mTouchListener);
 
-
-        // set storage helper
-        mDatabase = new StorageHelper(getApplicationContext());
-        mDatabase.setIsActivate(true);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String CHANNEL_ID = "my_channel_01";
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
@@ -107,8 +101,8 @@ public class BrightnessService extends Service {
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
 
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setContentTitle("")
-                    .setContentText("").build();
+                    .setContentTitle("mContentTitle")
+                    .setContentText("mContentText").build();
             startForeground(1, notification);
         }
     }
@@ -124,18 +118,9 @@ public class BrightnessService extends Service {
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
 
+        // clear the block
         if (mLinearLayout != null){
             mWindowManager.removeView(mLinearLayout);
-        }
-
-        mDatabase.setIsActivate(false);
-        showToast("service is destroyed, on purpose? " + mDatabase.getOnPurpose());
-
-        if (mDatabase.getOnPurpose()) {
-            sendBroadcast(
-                    new Intent(this, RestartReceiver.class).setAction("Restart")
-            );
-            showToast("service try to restart itself");
         }
 
         super.onDestroy();
