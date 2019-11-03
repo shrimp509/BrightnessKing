@@ -4,18 +4,18 @@ import android.animation.Animator
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.IBinder
 import android.provider.Settings
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import com.crashlytics.android.Crashlytics
+import android.app.ActivityManager
+import android.widget.Toast
+
 
 private const val RC_WRITE_SETTING = 0
 private const val RC_SYSTEM_OVERLAY = 1
@@ -23,15 +23,12 @@ private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var btn : ImageButton
-    private lateinit var storageHelper : StorageHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         checkPermissions()
-
-        storageHelper = StorageHelper(this)
 
         initView()
     }
@@ -41,40 +38,22 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    private fun initView(){
+    private fun initView() {
         initBrightnessOnOffButton()
 
         setLogoAnimation()
-
-        setTitleTypeFace()
     }
 
-    private fun initBrightnessOnOffButton(){
-        btn = findViewById(R.id.main_btn)
-
-        // FORCE to set the activate state to false
-        btn.setOnLongClickListener {
-            storageHelper.setIsActivate(false)
-            true
+    private fun initBrightnessOnOffButton() {
+        val title = findViewById<TextView>(R.id.main_title)
+        title.setOnClickListener {
+            Log.d(TAG, "is my service running?: ${isMyServiceRunning()}")
         }
 
-        // test the broadcast receiver is working or not // TODO: remember to delete it after testing
-//        val title = findViewById<TextView>(R.id.main_title)
-//        title.setOnClickListener{
-//            sendBroadcast(
-//                Intent(this, RestartReceiver::class.java).setAction("Restart")
-//            )
-//        }
-//
-//        // test not on purpose close service // TODO: remember to delete it after testing
-//        title.setOnLongClickListener {
-//            storageHelper.setOnPurpose(true)
-//            stopService(Intent(this, BrightnessService::class.java))
-//            true
-//        }
+        btn = findViewById(R.id.main_btn)
 
         // update button state first
-        if (storageHelper.getIsActivate()) {
+        if (isMyServiceRunning()) {
             btn.setImageResource(R.drawable.button_on_state)
         }else {
             btn.setImageResource(R.drawable.button_off_state)
@@ -83,27 +62,42 @@ class MainActivity : AppCompatActivity() {
         // set action
         val brightnessService = Intent(this, BrightnessService::class.java)
         btn.setOnClickListener {
-            if (storageHelper.getIsActivate()) {
-                storageHelper.setOnPurpose(false)
+            if (isMyServiceRunning()) {
+                // try to close service
                 Thread {
                     Thread.sleep(50)
-                    stopService(brightnessService)
+                    val close = stopService(brightnessService)
+
+                    if (!close) {
+                        while (isMyServiceRunning()) {
+                            Thread.sleep(500)
+                            Log.d(TAG, "service isn't close yet")
+                            stopService(brightnessService)
+                            btn.setImageResource(R.drawable.button_off_state)
+                        }
+                    }else {
+                        btn.setImageResource(R.drawable.button_off_state)
+                    }
                 }.start()
-                btn.setImageResource(R.drawable.button_off_state)
             }else {
+                // try to start service
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(brightnessService)
-                    storageHelper.setOnPurpose(true)
                 }else {
                     startService(brightnessService)
-                    storageHelper.setOnPurpose(true)
                 }
-                btn.setImageResource(R.drawable.button_on_state)
+
+                // check service is running or not
+                if (isMyServiceRunning()) {
+                    btn.setImageResource(R.drawable.button_on_state)
+                }else {
+                    showToast("service isn't started")
+                }
             }
         }
     }
 
-    private fun setLogoAnimation(){
+    private fun setLogoAnimation() {
 
         // set animation
         val backgroundWhite = findViewById<ImageView>(R.id.white_background)
@@ -129,15 +123,6 @@ class MainActivity : AppCompatActivity() {
                 // Nothing to do
             }
         }).start()
-    }
-
-    private fun setTitleTypeFace(){
-        val title = findViewById<TextView>(R.id.main_title)
-        setTypeFace(title)
-    }
-
-    private fun setTypeFace(view : TextView){
-        view.typeface = Typeface.createFromAsset(assets, resources.getString(R.string.main_title_typeface))
     }
 
     private fun checkPermissions(){
@@ -168,26 +153,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun bindService() {
-        Log.d(TAG, "bindService")
-        val intent = Intent(this, BrightnessService::class.java)
-//        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-        startService(intent)
-    }
+   private fun showToast(msg: String) {
+       Log.d(TAG, "toast: $msg")
+       Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+   }
 
-    private fun unbindService() {
-        Log.d(TAG, "unbindService")
-        unbindService(serviceConnection)
-    }
-
-    private val serviceConnection = object : ServiceConnection{
-        override fun onServiceDisconnected(p0: ComponentName?) {
-            storageHelper.setIsActivate(false)
+    private fun isMyServiceRunning(): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            Log.d(TAG, "service name: ${service.service.className}")
+            if (BrightnessService::class.java.name == service.service.className) {
+                return true
+            }
         }
-
-        override fun onServiceConnected(p0: ComponentName?, p1: IBinder?) {
-            storageHelper.setIsActivate(true)
-        }
-
+        return false
     }
 }
