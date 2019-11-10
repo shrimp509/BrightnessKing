@@ -8,7 +8,7 @@ ext {
     //  1.1.0
     versionMajor = 1
     versionMinor = 1
-    versionPatch = 0
+     versionPatch = 0
 
     versionBuild = 1
 }
@@ -47,6 +47,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    // New SharedPreference in Android Q
+    implementation 'androidx.preference:preference-ktx:1.1.0'
 
     // FireBase Analysis
     implementation 'com.google.firebase:firebase-analytics:17.2.1'

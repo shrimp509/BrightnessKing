@@ -1,37 +1,26 @@
 package net.rongsonho.brightnessking
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 
-private const val STATE_KEY = "activate_state"
-private const val ON_PURPOSE_KEY = "start_on_purpose"
+private const val FIRST_OPEN_KEY = "is_first_open_after_download"
 
-class StorageHelper(private val context : Context) {
+class StorageHelper() {
 
-    @SuppressLint("ApplySharedPref")
-    fun setIsActivate(activate : Boolean) {
-        PreferenceManager.getDefaultSharedPreferences(context)
-            .edit()
-            .putBoolean(STATE_KEY, activate)
-            .commit()
+    companion object {
+        fun setIsFirstOpenAfterDownload(context : Context, activate : Boolean) {
+            PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(FIRST_OPEN_KEY, activate)
+                .apply()
+        }
+
+        fun getIsFirstOpenAfterDownload(context : Context) : Boolean {
+            return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(FIRST_OPEN_KEY, false)
+        }
     }
 
-    fun getIsActivate() : Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-            .getBoolean(STATE_KEY, false)
-    }
 
-    @SuppressLint("ApplySharedPref")
-    fun setOnPurpose(onPurpose : Boolean) {
-        PreferenceManager.getDefaultSharedPreferences(context)
-            .edit()
-            .putBoolean(ON_PURPOSE_KEY, onPurpose)
-            .commit()
-    }
 
-    fun getOnPurpose() : Boolean {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-            .getBoolean(ON_PURPOSE_KEY, false)
-    }
 }

@@ -40,8 +40,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun initView() {
         initBrightnessOnOffButton()
-
         setLogoAnimation()
+        showTutorial()
     }
 
     private fun initBrightnessOnOffButton() {
@@ -171,5 +171,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return false
+    }
+
+    private fun showTutorial() {
+        if (StorageHelper.getIsFirstOpenAfterDownload(this)) {
+            // TODO: show welcome dialog
+
+            // TODO: show tutorial fragments
+
+            // set preference value to true
+            StorageHelper.setIsFirstOpenAfterDownload(this, true)
+        }
     }
 }
