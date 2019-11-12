@@ -5,7 +5,7 @@ import androidx.preference.PreferenceManager
 
 private const val FIRST_OPEN_KEY = "is_first_open_after_download"
 
-class StorageHelper() {
+class StorageHelper {
 
     companion object {
         fun setIsFirstOpenAfterDownload(context : Context, activate : Boolean) {
@@ -20,7 +20,4 @@ class StorageHelper() {
                 .getBoolean(FIRST_OPEN_KEY, false)
         }
     }
-
-
-
 }

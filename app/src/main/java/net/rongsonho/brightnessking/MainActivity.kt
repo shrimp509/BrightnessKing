@@ -15,7 +15,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.app.ActivityManager
 import android.widget.Toast
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private const val RC_WRITE_SETTING = 0
 private const val RC_SYSTEM_OVERLAY = 1
@@ -54,8 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         // update button state first
         btn.setImageResource(
-            if (isMyServiceRunning())
-                R.drawable.button_on_state
+            if (isMyServiceRunning()) R.drawable.button_on_state
             else R.drawable.button_off_state
         )
 
@@ -130,8 +132,8 @@ class MainActivity : AppCompatActivity() {
         val brightnessService = Intent(this, BrightnessService::class.java)
         if (isMyServiceRunning()) {
             // try to close service
-            Thread {
-                Thread.sleep(50)
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(50)
                 val close = stopService(brightnessService)
 
                 if (!close) {
@@ -144,8 +146,14 @@ class MainActivity : AppCompatActivity() {
                 }else {
                     btn.setImageResource(R.drawable.button_off_state)
                 }
-            }.start()
+            }
         }else {
+            // disable auto brightness control
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.System.canWrite(this)) {
+//                showToast("替您關閉手機設定中的自動調整亮度哦")
+//                Settings.System.putInt(contentResolver, SCREEN_BRIGHTNESS_MODE, SCREEN_BRIGHTNESS_MODE_MANUAL)    // This can disable auto-brightness
+//            }
+
             // try to start service
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(brightnessService)
@@ -174,8 +182,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showTutorial() {
-        if (StorageHelper.getIsFirstOpenAfterDownload(this)) {
-            // TODO: show welcome dialog
+        if (!StorageHelper.getIsFirstOpenAfterDownload(this)) {
+            // show welcome dialog
+            AlertDialog.Builder(this)
+                .setTitle(resources.getString(R.string.main_welcome_dialog_title))
+                .setMessage(resources.getString(R.string.main_welcome_dialog_message))
+                .setPositiveButton(resources.getString(R.string.main_welcome_dialog_positive_btn), null)
+                .create()
+                .show()
 
             // TODO: show tutorial fragments
 

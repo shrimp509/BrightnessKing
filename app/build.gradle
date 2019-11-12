@@ -10,7 +10,7 @@ ext {
     versionMinor = 1
      versionPatch = 0
 
-    versionBuild = 1
+    versionBuild = 2
 }
 
 android {

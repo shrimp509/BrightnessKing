@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">不完美的亮度王</string>
 
-    <string name="main_title_typeface">TaipeiSansTCBeta-Bold.ttf</string>
     <string name="main_alert_dialog_title_permissions_denied">權限要求</string>
     <string name="main_alert_dialog_message_permissions_denied">這些權限需要您的允許，才能正常運作</string>
     <string name="main_alert_dialog_ok_permissions_denied">好</string>
 
-
+    <string name="main_welcome_dialog_title">感謝您的下載</string>
+    <string name="main_welcome_dialog_message">按下畫面中的燈泡，即可啟動螢幕下方的亮度條，這樣就不需要拉下通知欄，即可調整您想要的亮度，祝您使用愉快。</string>
+    <string name="main_welcome_dialog_positive_btn">不客氣啦~</string>
 </resources>
