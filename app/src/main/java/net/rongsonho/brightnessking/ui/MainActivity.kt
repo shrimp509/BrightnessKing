@@ -150,7 +150,6 @@ class MainActivity : AppCompatActivity() {
 
             // auto close app after starting service
             CoroutineScope(Dispatchers.Main).launch {
-
                 // check service is running or not
                 if (isMyServiceRunning()) {
                     btn.setImageResource(R.drawable.button_on_state)
