@@ -1,4 +1,4 @@
-package net.rongsonho.brightnessking
+package net.rongsonho.brightnessking.service
 
 import android.app.ActivityManager
 import android.content.BroadcastReceiver

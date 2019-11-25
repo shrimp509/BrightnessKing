@@ -1,6 +1,5 @@
-package net.rongsonho.brightnessking
+package net.rongsonho.brightnessking.ui
 
-import android.animation.Animator
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
@@ -19,6 +18,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.rongsonho.brightnessking.R
+import net.rongsonho.brightnessking.util.StorageHelper
+import net.rongsonho.brightnessking.service.BrightnessService
 
 private const val RC_WRITE_SETTING = 0
 private const val RC_SYSTEM_OVERLAY = 1
@@ -101,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             AlertDialog.Builder(this)
                 .setTitle(resources.getString(R.string.main_alert_dialog_title_permissions_denied))
                 .setMessage(resources.getString(R.string.main_alert_dialog_message_permissions_denied))
-                .setPositiveButton(resources.getString(R.string.main_alert_dialog_ok_permissions_denied)) { _ , _ ->
+                .setPositiveButton(resources.getString(R.string.main_alert_dialog_ok_permissions_denied)) { _, _ ->
                     checkPermissions()
                 } .create()
                 .show()
@@ -185,7 +187,10 @@ class MainActivity : AppCompatActivity() {
             // TODO: show tutorial fragments
 
             // set preference value to true
-            StorageHelper.setIsFirstOpenAfterDownload(this, true)
+            StorageHelper.setIsFirstOpenAfterDownload(
+                this,
+                true
+            )
         }
     }
 }
