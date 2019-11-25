@@ -1,6 +1,7 @@
 package net.rongsonho.brightnessking.service;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -9,13 +10,25 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.view.*;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.LinearLayout;
 
+import androidx.core.app.NotificationCompat;
+
+import net.rongsonho.brightnessking.R;
 import net.rongsonho.brightnessking.service.util.BrightnessGestureListener;
 
 public class BrightnessService extends Service {
@@ -51,11 +64,17 @@ public class BrightnessService extends Service {
         Log.d(TAG, "onDestroy");
 
         // clear the block
-        if (mSlidingRegion != null){
-            mWindowManager.removeView(mSlidingRegion);
+        if (mSlidingRegion != null) {
+            // shrink anim
+            mSlidingRegion.animate().scaleX(0f).scaleY(0f).setDuration(300)
+                    .setInterpolator(new AccelerateInterpolator())
+                    .withEndAction(()-> {
+                        Log.d(TAG, "onDestroy, onShrinkAnimationEnd, removeView");
+                        // remove view
+                        mWindowManager.removeView(mSlidingRegion);
+                        super.onDestroy();
+                    }).start();
         }
-
-        super.onDestroy();
     }
 
     @Override
@@ -87,6 +106,9 @@ public class BrightnessService extends Service {
 
         // draw rect
         mWindowManager.addView(mSlidingRegion, getWindowLayoutParams(regionWidth, regionHeight, Gravity.BOTTOM));
+
+        // show popup animate when created
+        setPopUpAnimation(mSlidingRegion);
 
         // set sliding behavior on rect
         mGestureDetector = new GestureDetector(this, new BrightnessGestureListener(getApplicationContext()));
@@ -187,7 +209,19 @@ public class BrightnessService extends Service {
             if (manager != null) {
                 manager.createNotificationChannel(channel);
             }
+
+            // compat
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle("mContentTitle")
+                    .setContentText("mContentText").build();
+
+            startForeground(1, notification);
         }
     }
 
+    private void setPopUpAnimation(View view) {
+        view.setScaleX(0.1f);
+        view.setScaleY(0.1f);
+        view.animate().scaleX(1f).scaleY(1f).setStartDelay(1500).setDuration(500).setInterpolator(new BounceInterpolator()).start();
+    }
 }

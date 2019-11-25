@@ -125,12 +125,13 @@ class MainActivity : AppCompatActivity() {
 
                 if (!close) {
                     while (isMyServiceRunning()) {
-                        Thread.sleep(500)
-                        Log.d(TAG, "service isn't close yet")
+                        Thread.sleep(200)
+                        Log.d(TAG, "service isn't closed yet.")
                         stopService(brightnessService)
-                        btn.setImageResource(R.drawable.button_off_state)
                     }
+                    btn.setImageResource(R.drawable.button_off_state)
                 }else {
+                    Log.d(TAG, "service is closed.")
                     btn.setImageResource(R.drawable.button_off_state)
                 }
             }
@@ -153,7 +154,7 @@ class MainActivity : AppCompatActivity() {
                 // check service is running or not
                 if (isMyServiceRunning()) {
                     btn.setImageResource(R.drawable.button_on_state)
-                    delay(300)
+                    delay(100)
                     finish()
                 }else {
                     showToast("service isn't started")
