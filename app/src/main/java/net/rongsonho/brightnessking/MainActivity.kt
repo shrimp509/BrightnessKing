@@ -68,34 +68,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLogoAnimation() {
-
         // set animation
         val backgroundWhite = findViewById<ImageView>(R.id.white_background)
         val logo = findViewById<ImageView>(R.id.main_icon)
 
-        logo.animate().alpha(1f).setDuration(2000).setListener(object : Animator.AnimatorListener{
-            override fun onAnimationRepeat(p0: Animator?) {
-                // Nothing to do
-            }
-
-            override fun onAnimationEnd(p0: Animator?) {
-
-                // set Foreground icon and background to
-                backgroundWhite.animate().alpha(0f).setDuration(300).start()
-                logo.animate().alpha(0f).setDuration(300).start()
-            }
-
-            override fun onAnimationCancel(p0: Animator?) {
-                // Nothing to do
-            }
-
-            override fun onAnimationStart(p0: Animator?) {
-                // Nothing to do
-            }
-        }).start()
+        // show logo and disappear
+        logo.animate().alpha(1f).setDuration(2000).withEndAction {
+            // set Foreground icon and background to invisible
+            backgroundWhite.animate().alpha(0f).setDuration(300).start()
+            logo.animate().alpha(0f).setDuration(300).start()
+        }.start()
     }
 
-    private fun checkPermissions(){
+    private fun checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.System.canWrite(this)) {
                 val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:$packageName"))
@@ -161,11 +146,17 @@ class MainActivity : AppCompatActivity() {
                 startService(brightnessService)
             }
 
-            // check service is running or not
-            if (isMyServiceRunning()) {
-                btn.setImageResource(R.drawable.button_on_state)
-            }else {
-                showToast("service isn't started")
+            // auto close app after starting service
+            CoroutineScope(Dispatchers.Main).launch {
+
+                // check service is running or not
+                if (isMyServiceRunning()) {
+                    btn.setImageResource(R.drawable.button_on_state)
+                    delay(300)
+                    finish()
+                }else {
+                    showToast("service isn't started")
+                }
             }
         }
     }
