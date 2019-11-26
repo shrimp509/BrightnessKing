@@ -10,25 +10,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.view.*;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.AnticipateInterpolator;
 import android.view.animation.BounceInterpolator;
-import android.view.animation.OvershootInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.LinearLayout;
-
 import androidx.core.app.NotificationCompat;
-
-import net.rongsonho.brightnessking.R;
 import net.rongsonho.brightnessking.service.util.BrightnessGestureListener;
 
 public class BrightnessService extends Service {
@@ -66,8 +55,8 @@ public class BrightnessService extends Service {
         // clear the block
         if (mSlidingRegion != null) {
             // shrink anim
-            mSlidingRegion.animate().scaleX(0f).scaleY(0f).setDuration(300)
-                    .setInterpolator(new AccelerateInterpolator())
+            mSlidingRegion.animate().scaleX(0f).scaleY(0f).setDuration(500)
+                    .setInterpolator(new BounceInterpolator())
                     .withEndAction(()-> {
                         Log.d(TAG, "onDestroy, onShrinkAnimationEnd, removeView");
                         // remove view
