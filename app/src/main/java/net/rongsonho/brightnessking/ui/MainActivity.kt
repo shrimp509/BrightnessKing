@@ -27,7 +27,7 @@ private const val RC_SYSTEM_OVERLAY = 1
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var btn : ImageButton
+    private lateinit var bulbBtn : ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,16 +55,16 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "is my service running?: ${isMyServiceRunning()}")
         }
 
-        btn = findViewById(R.id.main_btn)
+        bulbBtn = findViewById(R.id.main_btn)
 
         // update button state first
-        btn.setImageResource(
+        bulbBtn.setImageResource(
             if (isMyServiceRunning()) R.drawable.button_on_state
             else R.drawable.button_off_state
         )
 
         // set action
-        btn.setOnClickListener {
+        bulbBtn.setOnClickListener {
             setButtonBehavior()
         }
     }
@@ -116,49 +116,59 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setButtonBehavior() {
-        val brightnessService = Intent(this, BrightnessService::class.java)
         if (isMyServiceRunning()) {
-            // try to close service
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(50)
-                val close = stopService(brightnessService)
-
-                if (!close) {
-                    while (isMyServiceRunning()) {
-                        Thread.sleep(200)
-                        Log.d(TAG, "service isn't closed yet.")
-                        stopService(brightnessService)
-                    }
-                    btn.setImageResource(R.drawable.button_off_state)
-                }else {
-                    Log.d(TAG, "service is closed.")
-                    btn.setImageResource(R.drawable.button_off_state)
-                }
-            }
+            turnOffService()
         }else {
-            // disable auto brightness control
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.System.canWrite(this)) {
-//                showToast("替您關閉手機設定中的自動調整亮度哦")
-//                Settings.System.putInt(contentResolver, SCREEN_BRIGHTNESS_MODE, SCREEN_BRIGHTNESS_MODE_MANUAL)    // This can disable auto-brightness
-//            }
+            turnOnService()
+        }
+    }
 
-            // try to start service
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(brightnessService)
-            }else {
-                startService(brightnessService)
-            }
+    private fun turnOffService() {
+        // try to close service
+        CoroutineScope(Dispatchers.Main).launch {
+            val brightnessService = Intent(this@MainActivity, BrightnessService::class.java)
+            delay(50)
+            val close = stopService(brightnessService)
 
-            // auto close app after starting service
-            CoroutineScope(Dispatchers.Main).launch {
-                // check service is running or not
-                if (isMyServiceRunning()) {
-                    btn.setImageResource(R.drawable.button_on_state)
-                    delay(100)
-                    finish()
-                }else {
-                    showToast("service isn't started")
+            if (!close) {
+                while (isMyServiceRunning()) {
+                    Thread.sleep(200)
+                    Log.d(TAG, "service isn't closed yet.")
+                    stopService(brightnessService)
                 }
+                bulbBtn.setImageResource(R.drawable.button_off_state)
+            }else {
+                Log.d(TAG, "service is closed.")
+                bulbBtn.setImageResource(R.drawable.button_off_state)
+            }
+        }
+    }
+
+    private fun turnOnService() {
+        val brightnessService = Intent(this, BrightnessService::class.java)
+
+        // disable auto brightness control
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Settings.System.canWrite(this)) {
+//            showToast("替您關閉手機設定中的自動調整亮度哦")
+//            Settings.System.putInt(contentResolver, SCREEN_BRIGHTNESS_MODE, SCREEN_BRIGHTNESS_MODE_MANUAL)    // This can disable auto-brightness
+//        }
+
+        // try to start service
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(brightnessService)
+        }else {
+            startService(brightnessService)
+        }
+
+        // auto close app after starting service
+        CoroutineScope(Dispatchers.Main).launch {
+            // check service is running or not
+            if (isMyServiceRunning()) {
+                bulbBtn.setImageResource(R.drawable.button_on_state)
+                delay(100)
+                finish()
+            }else {
+                showToast("service isn't started")
             }
         }
     }
