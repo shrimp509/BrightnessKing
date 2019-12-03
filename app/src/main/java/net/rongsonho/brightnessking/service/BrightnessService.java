@@ -15,9 +15,10 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.view.*;
-import android.view.animation.BounceInterpolator;
 import android.widget.LinearLayout;
 import androidx.core.app.NotificationCompat;
+
+import net.rongsonho.brightnessking.R;
 import net.rongsonho.brightnessking.service.util.BrightnessGestureListener;
 
 public class BrightnessService extends Service {
@@ -54,15 +55,8 @@ public class BrightnessService extends Service {
 
         // clear the block
         if (mSlidingRegion != null) {
-            // shrink anim
-            mSlidingRegion.animate().scaleX(0f).scaleY(0f).setDuration(500)
-                    .setInterpolator(new BounceInterpolator())
-                    .withEndAction(()-> {
-                        Log.d(TAG, "onDestroy, onShrinkAnimationEnd, removeView");
-                        // remove view
-                        mWindowManager.removeView(mSlidingRegion);
-                        super.onDestroy();
-                    }).start();
+            // remove view
+            mWindowManager.removeView(mSlidingRegion);
         }
     }
 
@@ -97,7 +91,7 @@ public class BrightnessService extends Service {
         mWindowManager.addView(mSlidingRegion, getWindowLayoutParams(regionWidth, regionHeight, Gravity.BOTTOM));
 
         // show popup animate when created
-        setPopUpAnimation(mSlidingRegion);
+//        setPopUpAnimation(mWindowManager);
 
         // set sliding behavior on rect
         mGestureDetector = new GestureDetector(this, new BrightnessGestureListener(getApplicationContext()));
@@ -150,6 +144,10 @@ public class BrightnessService extends Service {
         windowParams.gravity = gravity;
         windowParams.x = 0;
         windowParams.y = 0;
+
+        // set window animation
+        windowParams.windowAnimations = R.style.service_in_and_out_animation;
+
         return windowParams;
     }
 
@@ -206,11 +204,5 @@ public class BrightnessService extends Service {
 
             startForeground(1, notification);
         }
-    }
-
-    private void setPopUpAnimation(View view) {
-        view.setScaleX(0.1f);
-        view.setScaleY(0.1f);
-        view.animate().scaleX(1f).scaleY(1f).setStartDelay(1500).setDuration(500).setInterpolator(new BounceInterpolator()).start();
     }
 }
