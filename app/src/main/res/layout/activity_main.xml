@@ -156,16 +156,15 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-            android:id="@+id/main_icon"
-            android:layout_width="wrap_content"
+            android:id="@+id/main_logo"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:alpha="0.3"
-            app:layout_constraintBottom_toTopOf="@+id/top_070_guideline_logo_bottom"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/top_030_guideline_logo_top"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/rs_logo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
