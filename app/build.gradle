@@ -5,19 +5,19 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
 ext {
-    //  1.1.0
+    //  1.1.2
     versionMajor = 1
     versionMinor = 1
-     versionPatch = 0
+     versionPatch = 2
 
-    versionBuild = 2
+    versionBuild = 1
 }
 
 android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "net.rongsonho.brightnessking"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 29
 
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild

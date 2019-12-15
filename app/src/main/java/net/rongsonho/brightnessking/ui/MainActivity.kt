@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     private fun setLogoAnimation() {
         // set animation
         val backgroundWhite = findViewById<ImageView>(R.id.white_background)
-        val logo = findViewById<ImageView>(R.id.main_icon)
+        val logo = findViewById<ImageView>(R.id.main_logo)
 
         // show logo and disappear
         logo.animate().alpha(1f).setDuration(2000).withEndAction {
