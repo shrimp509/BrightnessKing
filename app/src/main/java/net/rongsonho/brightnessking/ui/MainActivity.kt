@@ -68,10 +68,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         // update button state first
-        bulbBtn.setImageResource(
-            if (isMyServiceRunning()) R.drawable.button_on_state
-            else R.drawable.button_off_state
-        )
+        if (isMyServiceRunning()) {
+            initLightOn()
+        } else {
+            initLightOff()
+        }
 
         // set action
         bulbBtn.setOnClickListener {
@@ -214,6 +215,24 @@ class MainActivity : AppCompatActivity() {
         bulbBackgroundLayer3.animate().alpha(0f).setDuration(800).start()
         delay(500)
         bulbBackgroundLayer2.animate().alpha(0f).setDuration(800).start()
+    }
+
+    private fun initLightOn() {
+        title.setTextColor(Color.parseColor("#393737"))
+        subtitle.setTextColor(Color.parseColor("#919497"))
+        stateOffBackground.alpha = 0f
+        bulbBtn.setImageResource(R.drawable.button_on_state)
+        bulbBackgroundLayer2.alpha = 1f
+        bulbBackgroundLayer3.alpha = 1f
+    }
+
+    private fun initLightOff() {
+        title.setTextColor(Color.parseColor("#FAFAFA"))
+        subtitle.setTextColor(Color.parseColor("#919497"))
+        stateOffBackground.alpha = 1f
+        bulbBtn.setImageResource(R.drawable.button_off_state)
+        bulbBackgroundLayer2.alpha = 0f
+        bulbBackgroundLayer3.alpha = 0f
     }
 
     private fun showTutorial() {
