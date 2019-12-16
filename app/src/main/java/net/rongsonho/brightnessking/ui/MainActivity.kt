@@ -13,7 +13,10 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.app.ActivityManager
+import android.graphics.Color
 import android.widget.Toast
+import butterknife.BindView
+import butterknife.ButterKnife
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -21,17 +24,26 @@ import kotlinx.coroutines.launch
 import net.rongsonho.brightnessking.R
 import net.rongsonho.brightnessking.util.StorageHelper
 import net.rongsonho.brightnessking.service.BrightnessService
+import org.w3c.dom.Text
 
 private const val RC_WRITE_SETTING = 0
 private const val RC_SYSTEM_OVERLAY = 1
 private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var bulbBtn : ImageButton
+    @BindView(R.id.main_btn) lateinit var bulbBtn : ImageButton
+    @BindView(R.id.bulb_background_layer2) lateinit var bulbBackgroundLayer2 : ImageView
+    @BindView(R.id.bulb_background_layer3) lateinit var bulbBackgroundLayer3 : ImageView
+    @BindView(R.id.on_background) lateinit var stateOnBackground : ImageView
+    @BindView(R.id.off_background) lateinit var stateOffBackground : ImageView
+    @BindView(R.id.main_title) lateinit var title : TextView
+    @BindView(R.id.main_subtitle) lateinit var subtitle : TextView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+            override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_version2)
+
+        ButterKnife.bind(this)
 
         checkPermissions()
 
@@ -54,8 +66,6 @@ class MainActivity : AppCompatActivity() {
         title.setOnClickListener {
             Log.d(TAG, "is my service running?: ${isMyServiceRunning()}")
         }
-
-        bulbBtn = findViewById(R.id.main_btn)
 
         // update button state first
         bulbBtn.setImageResource(
@@ -132,14 +142,15 @@ class MainActivity : AppCompatActivity() {
 
             if (!close) {
                 while (isMyServiceRunning()) {
-                    Thread.sleep(200)
                     Log.d(TAG, "service isn't closed yet.")
                     stopService(brightnessService)
                 }
-                bulbBtn.setImageResource(R.drawable.button_off_state)
+
+                animateTurnOffTheLight()
             }else {
                 Log.d(TAG, "service is closed.")
-                bulbBtn.setImageResource(R.drawable.button_off_state)
+
+                animateTurnOffTheLight()
             }
         }
     }
@@ -164,9 +175,9 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             // check service is running or not
             if (isMyServiceRunning()) {
-                bulbBtn.setImageResource(R.drawable.button_on_state)
-                delay(100)
-                finish()
+                CoroutineScope(Dispatchers.Main).launch {
+                    animateTurnOnTheLight()
+                }
             }else {
                 showToast("service isn't started")
             }
@@ -182,6 +193,27 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return false
+    }
+
+    private suspend fun animateTurnOnTheLight() {
+        title.setTextColor(Color.parseColor("#393737"))
+        subtitle.setTextColor(Color.parseColor("#919497"))
+        stateOffBackground.animate().alpha(0f).setDuration(3000).start()
+        bulbBtn.setImageResource(R.drawable.button_on_state)
+        delay(400)
+        bulbBackgroundLayer2.animate().setDuration(1000).alpha(1f).start()
+        delay(400)
+        bulbBackgroundLayer3.animate().setDuration(1000).alpha(1f).start()
+    }
+
+    private suspend fun animateTurnOffTheLight() {
+        title.setTextColor(Color.parseColor("#FAFAFA"))
+        subtitle.setTextColor(Color.parseColor("#919497"))
+        bulbBtn.setImageResource(R.drawable.button_off_state)
+        stateOffBackground.animate().alpha(1f).setDuration(3000).start()
+        bulbBackgroundLayer3.animate().alpha(0f).setDuration(800).start()
+        delay(500)
+        bulbBackgroundLayer2.animate().alpha(0f).setDuration(800).start()
     }
 
     private fun showTutorial() {
