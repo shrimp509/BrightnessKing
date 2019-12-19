@@ -146,7 +146,7 @@ public class BrightnessService extends Service {
         windowParams.y = 0;
 
         // set window animation
-        windowParams.windowAnimations = R.style.service_in_and_out_animation;
+        windowParams.windowAnimations = R.style.ServiceInAndOutAnimation;
 
         return windowParams;
     }

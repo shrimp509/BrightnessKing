@@ -8,9 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="service_in_and_out_animation">
+    <style name="ServiceInAndOutAnimation">
         <item name="android:windowEnterAnimation">@anim/service_pop_up_animation</item>
         <item name="android:windowExitAnimation">@anim/service_disappear_animation</item>
     </style>
 
+    <style name="SettingSwitch" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">#46bdbf</item>
+        <item name="colorSwitchThumbNormal">#f1f1f1</item>
+        <item name="android:colorForeground">#42221f1f</item>
+    </style>
 </resources>
