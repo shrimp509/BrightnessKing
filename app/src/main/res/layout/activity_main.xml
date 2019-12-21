@@ -1,85 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.MainActivity" android:background="@android:color/white">
+        tools:context=".ui.MainActivity">
+
+    <ImageView
+            android:id="@+id/on_background"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/on_background" />
+
+    <ImageView
+            android:id="@+id/off_background"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/off_background" />
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/top_070_guideline_logo_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.7" />
+            app:layout_constraintGuide_percent="0.65" />
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/top_080_guideline_logo_bottom2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.8" />
+            app:layout_constraintGuide_begin="628dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/top_080_guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.9" />
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/top_030_guideline_logo_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.3" />
+            app:layout_constraintGuide_percent="0.35" />
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/top_007_guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.07" />
+            app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/top_020_guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.2" />
-
-    <ImageButton
-            android:id="@+id/main_setting_btn"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:adjustViewBounds="true"
-            android:background="@drawable/setting_icon"
-            android:cropToPadding="false"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toTopOf="@+id/top_007_guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-            android:id="@+id/toolbar_divider"
-            android:layout_width="0dp"
-            android:layout_height="2dp"
-            android:background="#EEEEEE"
-            app:layout_constraintBottom_toTopOf="@+id/top_007_guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintGuide_percent="0.17" />
 
     <TextView
             android:id="@+id/main_title"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="24dp"
             android:layout_marginEnd="32dp"
             android:gravity="center"
             android:maxLines="1"
             android:singleLine="false"
             android:text="@string/app_name"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#1C1D1D"
+            android:textColor="#E9E9E9"
             android:textStyle="bold"
             app:autoSizeMaxTextSize="32sp"
             app:autoSizeMinTextSize="14sp"
@@ -108,52 +110,68 @@
             app:layout_constraintStart_toStartOf="@+id/main_title"
             app:layout_constraintTop_toBottomOf="@+id/main_title" />
 
+    <ImageView
+            android:id="@+id/bulb_background_layer3"
+            android:layout_width="330dp"
+            android:layout_height="330dp"
+            android:alpha="0"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/on_bulb_background_layer3" />
+
+    <ImageView
+            android:id="@+id/bulb_background_layer2"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:alpha="0"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/on_bulb_background_layer2" />
+
     <ImageButton
             android:id="@+id/main_btn"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_marginStart="32dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="24dp"
-            android:background="@drawable/white_round_rect_background"
-            app:layout_constraintBottom_toTopOf="@+id/top_080_guideline_logo_bottom2"
+            android:background="@android:color/transparent"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toTopOf="@+id/top_070_guideline_logo_bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/top_030_guideline_logo_top"
             app:srcCompat="@drawable/button_off_state" />
 
-    <TextView
-            android:id="@+id/main_guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="24dp"
-            android:background="@drawable/pink_round_rect_background"
-            android:gravity="center"
-            android:maxLines="1"
-            android:singleLine="false"
-            android:text="點亮燈炮即啟動"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            app:autoSizeMaxTextSize="20sp"
-            app:autoSizeMinTextSize="10sp"
-            app:autoSizeTextType="uniform"
-            app:layout_constraintBottom_toBottomOf="@+id/main_btn"
+    <fragment
+            android:id="@+id/setting_fragment"
+            android:name="net.rongsonho.brightnessking.ui.SettingFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/top_080_guideline" />
 
     <ImageView
             android:id="@+id/white_background"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@android:color/white"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
             android:id="@+id/main_logo"
@@ -161,6 +179,7 @@
             android:layout_height="0dp"
             android:alpha="0.3"
             android:scaleType="centerCrop"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

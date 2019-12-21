@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import net.rongsonho.brightnessking.R
 import net.rongsonho.brightnessking.util.StorageHelper
 import net.rongsonho.brightnessking.service.BrightnessService
-import org.w3c.dom.Text
+import net.rongsonho.brightnessking.util.Global
 
 private const val RC_WRITE_SETTING = 0
 private const val RC_SYSTEM_OVERLAY = 1
@@ -39,9 +39,9 @@ class MainActivity : AppCompatActivity() {
     @BindView(R.id.main_title) lateinit var title : TextView
     @BindView(R.id.main_subtitle) lateinit var subtitle : TextView
 
-            override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_version2)
+        setContentView(R.layout.activity_main)
 
         ButterKnife.bind(this)
 
