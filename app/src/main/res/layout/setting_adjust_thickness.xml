@@ -7,28 +7,42 @@
         android:background="@drawable/setting_item">
 
     <TextView
-            android:id="@+id/setting_item_auto_restart_item_title"
+            android:id="@+id/setting_item_adjust_thickness_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="自動重啟"
+            android:text="調整亮度條厚度"
             android:textSize="14sp"
             android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/left_095_guideline"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/left_005_guideline"
             app:layout_constraintTop_toTopOf="@+id/top_008_guideline" />
 
     <TextView
-            android:id="@+id/setting_item_auto_restart_item_subtitle"
+            android:id="@+id/setting_item_adjust_thickness_item_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="重開機後，自動啟用亮度條"
+            android:text="厚度: "
             android:textColor="#2A2C2E"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/left_005_guideline"
-            app:layout_constraintTop_toBottomOf="@+id/setting_item_auto_restart_item_title"
+            app:layout_constraintTop_toBottomOf="@+id/setting_item_adjust_thickness_item_title"
             app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+            android:id="@+id/setting_item_adjust_thickness_item_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="5"
+            android:textColor="#2A2C2E"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/setting_item_adjust_thickness_item_subtitle"
+            app:layout_constraintStart_toEndOf="@+id/setting_item_adjust_thickness_item_subtitle"
+            app:layout_constraintTop_toTopOf="@+id/setting_item_adjust_thickness_item_subtitle" />
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/left_005_guideline"
@@ -51,16 +65,15 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_percent="0.08" />
 
-    <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switch1"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:checked="true"
-            android:theme="@style/SettingSwitch"
+    <SeekBar
+            android:id="@+id/setting_item_adjust_thickness_item_seekbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/left_095_guideline"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/setting_item_auto_restart_item_subtitle"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@+id/left_005_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/setting_item_adjust_thickness_item_subtitle" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
