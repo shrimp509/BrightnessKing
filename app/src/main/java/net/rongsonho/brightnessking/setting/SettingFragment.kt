@@ -1,4 +1,4 @@
-package net.rongsonho.brightnessking.service.setting
+package net.rongsonho.brightnessking.setting
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
 import net.rongsonho.brightnessking.R
-import net.rongsonho.brightnessking.service.setting.data.Gravity
+import net.rongsonho.brightnessking.setting.data.Gravity
 import net.rongsonho.brightnessking.util.StorageHelper
 
 private const val TAG = "SettingFragment"

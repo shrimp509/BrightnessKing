@@ -1,4 +1,4 @@
-package net.rongsonho.brightnessking.service.setting.data
+package net.rongsonho.brightnessking.setting.data
 
 enum class Gravity {
     TOP,

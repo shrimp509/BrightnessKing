@@ -1,10 +1,8 @@
 package net.rongsonho.brightnessking.util
 
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.preference.PreferenceManager
-import net.rongsonho.brightnessking.service.setting.data.Gravity
+import net.rongsonho.brightnessking.setting.data.Gravity
 
 private const val FIRST_OPEN_KEY = "is_first_open_after_download"
 private const val AUTO_RESTART_KEY = "auto_restart_brightness_service"
