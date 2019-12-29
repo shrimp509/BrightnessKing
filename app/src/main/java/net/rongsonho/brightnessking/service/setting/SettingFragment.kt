@@ -1,4 +1,4 @@
-package net.rongsonho.brightnessking.ui
+package net.rongsonho.brightnessking.service.setting
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -60,6 +60,8 @@ class SettingFragment : Fragment(), View.OnTouchListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        // get screen size
         try {
             val screenSize = getScreenResolution()
             if (screenSize != null) {
@@ -77,7 +79,10 @@ class SettingFragment : Fragment(), View.OnTouchListener {
         }
     }
 
-    // get screen width and height
+    /* **************************
+     * General methods
+     * **************************/
+    // Get screen width and height
     private fun getScreenResolution(): Pair<Int, Int>? {
         val display = resources.displayMetrics
         val deviceHeight = display.heightPixels
@@ -85,6 +90,7 @@ class SettingFragment : Fragment(), View.OnTouchListener {
         return Pair(deviceWidth, deviceHeight)
     }
 
+    // Define the touch movement of setting panel
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         when (event!!.action and MotionEvent.ACTION_MASK) {
             MotionEvent.ACTION_MOVE -> {

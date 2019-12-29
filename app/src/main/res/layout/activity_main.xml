@@ -152,7 +152,7 @@
 
     <fragment
             android:id="@+id/setting_fragment"
-            android:name="net.rongsonho.brightnessking.ui.SettingFragment"
+            android:name="net.rongsonho.brightnessking.service.setting.SettingFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
