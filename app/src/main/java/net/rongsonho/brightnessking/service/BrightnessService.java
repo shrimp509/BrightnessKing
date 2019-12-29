@@ -20,12 +20,14 @@ import androidx.core.app.NotificationCompat;
 
 import net.rongsonho.brightnessking.R;
 import net.rongsonho.brightnessking.service.util.BrightnessGestureListener;
+import net.rongsonho.brightnessking.util.Global;
 
 public class BrightnessService extends Service {
     /* ******************
      * Constants
      * ******************/
     private static final String TAG = "BrightnessService";
+
 
     /* ******************
      * Global variables
@@ -44,9 +46,13 @@ public class BrightnessService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate");
 
         createSlidingRegion();
+
+        // set listeners
+        Global.setOnGravityChangedListener(gravity -> {
+            BrightnessService.this.setGravity(gravity);
+        });
     }
 
     @Override
@@ -101,34 +107,7 @@ public class BrightnessService extends Service {
         setNotificationChannel();
     }
 
-    // TODO: Implement the change rect width and height part
-    public void changeRectWidth(int widthChanged) {
-        int originalWidth = mSlidingRegion.getMeasuredWidth();
-        int originalHeight = mSlidingRegion.getMeasuredHeight();
-
-        mWindowManager.updateViewLayout(
-                mSlidingRegion,
-                getWindowLayoutParams(
-                        originalWidth + widthChanged,
-                        originalHeight,
-                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL)
-        );
-    }
-
-    public void changeRectHeight(int heightChanged) {
-        int originalWidth = mSlidingRegion.getMeasuredWidth();
-        int originalHeight = mSlidingRegion.getMeasuredHeight();
-
-        mWindowManager.updateViewLayout(
-                mSlidingRegion,
-                getWindowLayoutParams(
-                        originalWidth,
-                        originalHeight + heightChanged,
-                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL)
-        );
-    }
-
-    private WindowManager.LayoutParams getWindowLayoutParams(int width, int height, int gravity){
+    private WindowManager.LayoutParams getWindowLayoutParams(int width, int height, int gravity) {
         final WindowManager.LayoutParams windowParams;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             windowParams = new WindowManager.LayoutParams(width, height,
@@ -153,10 +132,14 @@ public class BrightnessService extends Service {
 
     // get screen width and height
     private Pair<Integer, Integer> getScreenResolution() {
-        DisplayMetrics display = getResources().getDisplayMetrics();
-        int deviceHeight = display.heightPixels;
-        int deviceWidth = display.widthPixels;
-        return new Pair<>(deviceWidth, deviceHeight);
+        if (getResources() != null) {
+            DisplayMetrics display = getResources().getDisplayMetrics();
+            int deviceHeight = display.heightPixels;
+            int deviceWidth = display.widthPixels;
+            return new Pair<>(deviceWidth, deviceHeight);
+        } else {
+            return new Pair<>(0, 0);
+        }
     }
 
     private Pair<Integer, Integer> getSlidingRegionSize() {
@@ -204,5 +187,61 @@ public class BrightnessService extends Service {
 
             startForeground(1, notification);
         }
+    }
+
+    // TODO: Implement the change rect width and height part
+    private void changeRectWidth(int widthChanged) {
+        int originalWidth = mSlidingRegion.getMeasuredWidth();
+        int originalHeight = mSlidingRegion.getMeasuredHeight();
+
+        mWindowManager.updateViewLayout(
+                mSlidingRegion,
+                getWindowLayoutParams(
+                        originalWidth + widthChanged,
+                        originalHeight,
+                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL)
+        );
+    }
+
+    private void changeRectHeight(int heightChanged) {
+        int originalWidth = mSlidingRegion.getMeasuredWidth();
+        int originalHeight = mSlidingRegion.getMeasuredHeight();
+
+        mWindowManager.updateViewLayout(
+                mSlidingRegion,
+                getWindowLayoutParams(
+                        originalWidth,
+                        originalHeight + heightChanged,
+                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL)
+        );
+    }
+
+    private void setGravity(net.rongsonho.brightnessking.setting.data.Gravity gravity) {
+        int viewGravity;
+        switch (gravity) {
+            case RIGHT:
+                viewGravity = Gravity.END;
+                break;
+            case LEFT:
+                viewGravity = Gravity.START;
+                break;
+            case TOP:
+                viewGravity = Gravity.TOP;
+                break;
+            default:
+                viewGravity = Gravity.BOTTOM;
+        }
+
+        mWindowManager.updateViewLayout(
+                mSlidingRegion,
+                getWindowLayoutParams(
+                        getSlidingRegionSize().first,
+                        getSlidingRegionSize().second,
+                        viewGravity | Gravity.CENTER_HORIZONTAL)
+        );
+    }
+
+    public interface OnGravityChangedListener {
+        void setGravity(net.rongsonho.brightnessking.setting.data.Gravity gravity);
     }
 }

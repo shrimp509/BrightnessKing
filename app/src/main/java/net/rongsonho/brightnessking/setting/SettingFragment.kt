@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.util.Pair
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
 import android.widget.*
 import androidx.appcompat.widget.SwitchCompat
@@ -13,11 +16,13 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import net.rongsonho.brightnessking.R
 import net.rongsonho.brightnessking.setting.data.Gravity
+import net.rongsonho.brightnessking.util.Global
 import net.rongsonho.brightnessking.util.StorageHelper
 
 private const val TAG = "SettingFragment"
 
 class SettingFragment : Fragment(), View.OnTouchListener {
+
     /* **************************
      * Constants
      * **************************/
@@ -148,7 +153,13 @@ class SettingFragment : Fragment(), View.OnTouchListener {
         gravitySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}    // do nothing
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // update the gravity
                 StorageHelper.setGravity(context!!, positionToGravity(position))
+
+                // really change gravity
+                if (Global.getOnGravityChangedListener() != null) {
+                    Global.getOnGravityChangedListener()?.setGravity(positionToGravity(position))
+                }
             }
         }
 
@@ -178,4 +189,5 @@ class SettingFragment : Fragment(), View.OnTouchListener {
             else -> Gravity.BOTTOM
         }
     }
+
 }
