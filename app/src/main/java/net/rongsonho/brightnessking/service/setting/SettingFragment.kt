@@ -10,10 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
 import android.widget.LinearLayout
+import android.widget.SeekBar
+import android.widget.Spinner
+import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
 import net.rongsonho.brightnessking.R
+import net.rongsonho.brightnessking.util.StorageHelper
 
 private const val TAG = "SettingFragment"
 
@@ -28,17 +32,21 @@ class SettingFragment : Fragment(), View.OnTouchListener {
     /* **************************
      * Global variables
      * **************************/
-    private lateinit var rootView: View
+    // touch/drag variable
     @BindView(R.id.setting_empty_layout_touch_area) lateinit var dragArea: LinearLayout
+    private lateinit var rootView: View
     private var screenHeight = 0
     private var screenWidth = 0
     private var fragmentHeight = 0
-
-    // touch/drag variable
     private var yDelta = 0f
     private var lastY = 0f
     private var currentFingerY = 0f
     private var spread = false
+
+    // setting items
+    @BindView(R.id.setting_item_auto_restart_item_switch) lateinit var autoRestartSwitch : SwitchCompat
+    @BindView(R.id.setting_item_choose_gravity_item_spinner) lateinit var gravitySpinner : Spinner
+    @BindView(R.id.setting_item_adjust_thickness_item_seekbar) lateinit var thicknessBar : SeekBar
 
     /* **************************
      * Initialization
@@ -56,6 +64,9 @@ class SettingFragment : Fragment(), View.OnTouchListener {
     private fun initView(view: View) {
         rootView = view
         dragArea.setOnTouchListener(this)
+
+        // check setting items' state
+        checkStates()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -122,5 +133,16 @@ class SettingFragment : Fragment(), View.OnTouchListener {
             }
         }
         return true
+    }
+
+    // Check every setting item's state (on or off, stored values)
+    private fun checkStates() {
+        // check auto restart
+        autoRestartSwitch.isChecked = StorageHelper.getAutoRestart(context!!)
+
+        // set check listener
+        autoRestartSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            StorageHelper.setAutoRestart(context!!, isChecked)
+        }
     }
 }

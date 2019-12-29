@@ -7,24 +7,32 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import net.rongsonho.brightnessking.util.StorageHelper
 
 private const val TAG = "RestartReceiver"
 
 class RestartReceiver : BroadcastReceiver() {
 
     override fun onReceive(context : Context?, intent: Intent?) {
-        val brightnessService = Intent(context, BrightnessService::class.java)
 
         if ("android.intent.action.BOOT_COMPLETED" == intent!!.action) {
-            // check if service is running
-            if (!isMyServiceRunning(context!!)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startForegroundService(brightnessService)
-                }else {
-                    context.startService(brightnessService)
+            // check setting
+            if (StorageHelper.getAutoRestart(context!!)) {
+                // check if service is running
+                if (!isMyServiceRunning(context)) {
+                    val brightnessService = Intent(context, BrightnessService::class.java)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        context.startForegroundService(brightnessService)
+                    } else {
+                        context.startService(brightnessService)
+                    }
                 }
+                showToast(context, "重新開啟不完美的亮度王中...")
+            } else {
+                Log.d(TAG, "Setting is not triggered to auto restart.")
             }
-            showToast(context, "重新開啟不完美的亮度王中...")
+        } else {
+            Log.d(TAG, "action is not == android.intent.action.BOOT_COMPLETED")
         }
     }
 
