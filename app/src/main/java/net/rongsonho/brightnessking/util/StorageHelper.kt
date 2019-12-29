@@ -1,6 +1,8 @@
 package net.rongsonho.brightnessking.util
 
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.preference.PreferenceManager
 import net.rongsonho.brightnessking.service.setting.data.Gravity
 
@@ -12,6 +14,8 @@ private const val GRAVITY_KEY = "gravity"
 class StorageHelper {
 
     companion object {
+        private const val TAG = "StorageHelper"
+
         // first open
         fun setIsFirstOpenAfterDownload(context : Context, activate : Boolean) {
             PreferenceManager.getDefaultSharedPreferences(context)

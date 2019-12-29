@@ -58,6 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
+            android:gravity="center"
             app:layout_constraintBottom_toBottomOf="@+id/setting_item_choose_gravity_item_subtitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/setting_item_choose_gravity_item_subtitle"

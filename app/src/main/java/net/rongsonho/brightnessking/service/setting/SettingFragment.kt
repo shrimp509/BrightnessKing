@@ -4,19 +4,15 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.util.Pair
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.OvershootInterpolator
-import android.widget.LinearLayout
-import android.widget.SeekBar
-import android.widget.Spinner
+import android.widget.*
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
 import net.rongsonho.brightnessking.R
+import net.rongsonho.brightnessking.service.setting.data.Gravity
 import net.rongsonho.brightnessking.util.StorageHelper
 
 private const val TAG = "SettingFragment"
@@ -143,6 +139,43 @@ class SettingFragment : Fragment(), View.OnTouchListener {
         // set check listener
         autoRestartSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             StorageHelper.setAutoRestart(context!!, isChecked)
+        }
+
+        // set gravity spinner
+        val gravityList = arrayListOf("下方", "右方", "左方", "上方")
+        val adapter = ArrayAdapter(context!!, android.R.layout.simple_spinner_dropdown_item, gravityList)
+        gravitySpinner.adapter = adapter
+        gravitySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}    // do nothing
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                StorageHelper.setGravity(context!!, positionToGravity(position))
+            }
+        }
+
+        // check gravity
+        gravitySpinner.setSelection(
+            gravityToPosition(
+                StorageHelper.getGravity(context!!)
+            )
+        )
+    }
+
+    private fun gravityToPosition(gravity: Gravity) : Int {
+        return when(gravity) {
+            Gravity.BOTTOM -> 0
+            Gravity.RIGHT -> 1
+            Gravity.LEFT -> 2
+            Gravity.TOP -> 3
+        }
+    }
+
+    private fun positionToGravity(position: Int) : Gravity {
+        return when(position) {
+            0 -> Gravity.BOTTOM
+            1 -> Gravity.RIGHT
+            2 -> Gravity.LEFT
+            3 -> Gravity.TOP
+            else -> Gravity.BOTTOM
         }
     }
 }
