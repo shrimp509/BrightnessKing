@@ -21,13 +21,13 @@ import androidx.core.app.NotificationCompat;
 import net.rongsonho.brightnessking.R;
 import net.rongsonho.brightnessking.service.util.BrightnessGestureListener;
 import net.rongsonho.brightnessking.util.Global;
+import net.rongsonho.brightnessking.util.StorageHelper;
 
 public class BrightnessService extends Service {
     /* ******************
      * Constants
      * ******************/
     private static final String TAG = "BrightnessService";
-
 
     /* ******************
      * Global variables
@@ -100,7 +100,7 @@ public class BrightnessService extends Service {
 //        setPopUpAnimation(mWindowManager);
 
         // set sliding behavior on rect
-        mGestureDetector = new GestureDetector(this, new BrightnessGestureListener(getApplicationContext()));
+        mGestureDetector = new GestureDetector(this, new BrightnessGestureListener(this, StorageHelper.getGravity(this)));
         mSlidingRegion.setOnTouchListener(mTouchListener);
 
         // set notification channel
@@ -147,6 +147,21 @@ public class BrightnessService extends Service {
          int screenWidth = screenSize.first;
          int screenHeight = screenSize.second;
          return new Pair<>(screenWidth, screenHeight/30);
+    }
+
+    private Pair<Integer, Integer> getSlidingRegionSize(net.rongsonho.brightnessking.setting.data.Gravity gravity) {
+        Pair<Integer, Integer> screenSize = getScreenResolution();
+        int screenWidth = screenSize.first;
+        int screenHeight = screenSize.second;
+        switch (gravity) {
+            case LEFT:
+            case RIGHT:
+                return new Pair<>(screenWidth/15, screenHeight);
+            case TOP:
+            case BOTTOM:
+                return new Pair<>(screenWidth, screenHeight/30);
+        }
+        return new Pair<>(screenWidth, screenHeight/30);
     }
 
     private LinearLayout getSlidingRegion(int regionWidth, int regionHeight, int color, float alpha) {
@@ -235,8 +250,8 @@ public class BrightnessService extends Service {
         mWindowManager.updateViewLayout(
                 mSlidingRegion,
                 getWindowLayoutParams(
-                        getSlidingRegionSize().first,
-                        getSlidingRegionSize().second,
+                        getSlidingRegionSize(gravity).first,
+                        getSlidingRegionSize(gravity).second,
                         viewGravity | Gravity.CENTER_HORIZONTAL)
         );
     }
