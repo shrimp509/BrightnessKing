@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1018951678670-fkjnl182k1oci1jtdfsj2dnrds6dp2td.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.rongsonho.brightnessking",
+            "certificate_hash": "c47571cc2094e1d1d089233c1570138b2d0f623a"
+          }
+        },
+        {
           "client_id": "1018951678670-tvf0sa584g0v2s52sqjadspinhu6bldu.apps.googleusercontent.com",
           "client_type": 3
         }
