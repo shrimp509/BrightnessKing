@@ -50,9 +50,7 @@ public class BrightnessService extends Service {
         createSlidingRegion();
 
         // set listeners
-        Global.setOnGravityChangedListener(gravity -> {
-            BrightnessService.this.setGravity(gravity);
-        });
+        Global.setOnGravityChangedListener(BrightnessService.this::setGravity);
     }
 
     @Override
@@ -86,7 +84,8 @@ public class BrightnessService extends Service {
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         // get sliding region size
-        Pair<Integer, Integer> regionSize = getSlidingRegionSize();
+        net.rongsonho.brightnessking.setting.data.Gravity gravity = StorageHelper.getGravity(this);
+        Pair<Integer, Integer> regionSize = getSlidingRegionSize(gravity);
         int regionWidth = regionSize.first;
         int regionHeight = regionSize.second;
 
@@ -94,13 +93,10 @@ public class BrightnessService extends Service {
         mSlidingRegion = getSlidingRegion(regionWidth, regionHeight, Color.LTGRAY, 0.2f);
 
         // draw rect
-        mWindowManager.addView(mSlidingRegion, getWindowLayoutParams(regionWidth, regionHeight, Gravity.BOTTOM));
-
-        // show popup animate when created
-//        setPopUpAnimation(mWindowManager);
+        mWindowManager.addView(mSlidingRegion, getWindowLayoutParams(regionWidth, regionHeight, fromGravityToGravity(gravity)));
 
         // set sliding behavior on rect
-        mGestureDetector = new GestureDetector(this, new BrightnessGestureListener(this, StorageHelper.getGravity(this)));
+        mGestureDetector = new GestureDetector(this, new BrightnessGestureListener(this, gravity));
         mSlidingRegion.setOnTouchListener(mTouchListener);
 
         // set notification channel
@@ -125,7 +121,20 @@ public class BrightnessService extends Service {
         windowParams.y = 0;
 
         // set window animation
-        windowParams.windowAnimations = R.style.ServiceInAndOutAnimation;
+        switch (StorageHelper.getGravity(this)) {
+            case TOP:
+                windowParams.windowAnimations = R.style.ServiceInAndOutAnimation_Top;
+                break;
+            case LEFT:
+                windowParams.windowAnimations = R.style.ServiceInAndOutAnimation_LEFT;
+                break;
+            case RIGHT:
+                windowParams.windowAnimations = R.style.ServiceInAndOutAnimation_Right;
+                break;
+            default:
+                windowParams.windowAnimations = R.style.ServiceInAndOutAnimation_Bottom;
+
+        }
 
         return windowParams;
     }
@@ -232,6 +241,18 @@ public class BrightnessService extends Service {
     }
 
     private void setGravity(net.rongsonho.brightnessking.setting.data.Gravity gravity) {
+        mWindowManager.updateViewLayout(
+                mSlidingRegion,
+                getWindowLayoutParams(
+                        getSlidingRegionSize(gravity).first,
+                        getSlidingRegionSize(gravity).second,
+                        fromGravityToGravity(gravity))
+        );
+
+        mGestureDetector = new GestureDetector(this, new BrightnessGestureListener(this, gravity));
+    }
+
+    private int fromGravityToGravity(net.rongsonho.brightnessking.setting.data.Gravity gravity) {
         int viewGravity;
         switch (gravity) {
             case RIGHT:
@@ -246,16 +267,7 @@ public class BrightnessService extends Service {
             default:
                 viewGravity = Gravity.BOTTOM;
         }
-
-        mWindowManager.updateViewLayout(
-                mSlidingRegion,
-                getWindowLayoutParams(
-                        getSlidingRegionSize(gravity).first,
-                        getSlidingRegionSize(gravity).second,
-                        viewGravity | Gravity.CENTER_HORIZONTAL)
-        );
-
-        mGestureDetector = new GestureDetector(this, new BrightnessGestureListener(this, gravity));
+        return viewGravity;
     }
 
     public interface OnGravityChangedListener {

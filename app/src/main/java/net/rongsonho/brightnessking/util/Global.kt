@@ -1,11 +1,11 @@
 package net.rongsonho.brightnessking.util
 
-import android.os.Bundle
 import net.rongsonho.brightnessking.service.BrightnessService
 
 class Global {
 
     companion object {
+        private const val TAG = "Global"
 
         /* ****************************
          * Private Variables
@@ -23,5 +23,4 @@ class Global {
             return onGravityChangedListener
         }
     }
-
 }

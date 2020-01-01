@@ -1,6 +1,8 @@
 package net.rongsonho.brightnessking.setting
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.util.Pair
@@ -15,7 +17,9 @@ import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
 import net.rongsonho.brightnessking.R
+import net.rongsonho.brightnessking.service.BrightnessService
 import net.rongsonho.brightnessking.setting.data.Gravity
+import net.rongsonho.brightnessking.ui.MainActivity
 import net.rongsonho.brightnessking.util.Global
 import net.rongsonho.brightnessking.util.StorageHelper
 
@@ -157,7 +161,7 @@ class SettingFragment : Fragment(), View.OnTouchListener {
                 StorageHelper.setGravity(context!!, positionToGravity(position))
 
                 // really change gravity
-                if (Global.getOnGravityChangedListener() != null) {
+                if (Global.getOnGravityChangedListener() != null && isMyServiceRunning()) {
                     Global.getOnGravityChangedListener()?.setGravity(positionToGravity(position))
                 }
             }
@@ -190,4 +194,14 @@ class SettingFragment : Fragment(), View.OnTouchListener {
         }
     }
 
+    private fun isMyServiceRunning(): Boolean {
+        val manager = context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            Log.d(TAG, "service name: ${service.service.className}")
+            if (BrightnessService::class.java.name == service.service.className) {
+                return true
+            }
+        }
+        return false
+    }
 }
