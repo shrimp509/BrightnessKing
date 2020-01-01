@@ -8,9 +8,29 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="service_in_and_out_animation">
-        <item name="android:windowEnterAnimation">@anim/service_pop_up_animation</item>
-        <item name="android:windowExitAnimation">@anim/service_disappear_animation</item>
+    <style name="ServiceInAndOutAnimation_Bottom">
+        <item name="android:windowEnterAnimation">@anim/service_pop_up_animation_bottom</item>
+        <item name="android:windowExitAnimation">@anim/service_disappear_animation_bottom</item>
     </style>
 
+    <style name="ServiceInAndOutAnimation_Top">
+        <item name="android:windowEnterAnimation">@anim/service_pop_up_animation_top</item>
+        <item name="android:windowExitAnimation">@anim/service_disappear_animation_top</item>
+    </style>
+
+    <style name="ServiceInAndOutAnimation_LEFT">
+        <item name="android:windowEnterAnimation">@anim/service_pop_up_animation_left</item>
+        <item name="android:windowExitAnimation">@anim/service_disappear_animation_left</item>
+    </style>
+
+    <style name="ServiceInAndOutAnimation_Right">
+        <item name="android:windowEnterAnimation">@anim/service_pop_up_animation_right</item>
+        <item name="android:windowExitAnimation">@anim/service_disappear_animation_right</item>
+    </style>
+
+    <style name="SettingSwitch" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">#474B4E</item>
+        <item name="colorSwitchThumbNormal">#f1f1f1</item>
+        <item name="android:colorForeground">#42221f1f</item>
+    </style>
 </resources>
