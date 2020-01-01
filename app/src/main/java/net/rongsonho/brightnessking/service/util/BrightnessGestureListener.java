@@ -6,26 +6,50 @@ import android.provider.Settings;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureListener {
-    private float lastX = 0, lastY = 0, deltaX = 0, deltaY = 0;
-    private Context context;
+import net.rongsonho.brightnessking.setting.data.Gravity;
 
-    public BrightnessGestureListener(Context context) {
+public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureListener {
+    private static final String TAG = BrightnessGestureListener.class.getSimpleName();
+
+    private float deltaX = 0, deltaY = 0;
+    private Context context;
+    private Gravity gravity;
+
+    public BrightnessGestureListener(Context context, Gravity gravity) {
         this.context = context;
+        this.gravity = gravity;
     }
 
     /*
-     * delta < 0 -> scroll to right
-     * delta > 0 -> scroll to left
+     * Gravity: TOP and BOTTOM
+     *  delta < 0 -> scroll to right
+     *  delta > 0 -> scroll to left
+     *
+     * Gravity: LEFT and RIGHT
+     *  delta > 0 -> scroll to up
+     *  delta < 0 -> scroll to down
      */
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        // Bottom side
-        deltaX = distanceX - lastX;
-        setBrightness(context, -deltaX);
+        switch (gravity) {
+            case TOP:
+            case BOTTOM:
+                deltaX = distanceX;
+                setBrightness(context, -deltaX);
+                break;
+
+            case LEFT:
+            case RIGHT:
+                deltaY = distanceY;
+                setBrightness(context, deltaY);
+                break;
+        }
         return true;
     }
 
+    /*
+     * Set relative brightness value
+     */
     private void setBrightness(Context context, float brightnessDelta) {
         ContentResolver contentResolver = context.getContentResolver();
         float nowBrightness = 0;
@@ -47,10 +71,17 @@ public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureLi
         }
     }
 
+    /*
+     * Set exactly brightness value
+     */
     private void setBrightness(Context context, int brightness) {
         ContentResolver contentResolver = context.getContentResolver();
         if (brightness > 0 && brightness <= 255){
             Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, brightness);
         }
+    }
+
+    public void setGravity(Gravity gravity) {
+        this.gravity = gravity;
     }
 }

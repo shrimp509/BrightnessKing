@@ -254,6 +254,8 @@ public class BrightnessService extends Service {
                         getSlidingRegionSize(gravity).second,
                         viewGravity | Gravity.CENTER_HORIZONTAL)
         );
+
+        mGestureDetector = new GestureDetector(this, new BrightnessGestureListener(this, gravity));
     }
 
     public interface OnGravityChangedListener {

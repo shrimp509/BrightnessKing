@@ -14,6 +14,7 @@ class StorageHelper {
     companion object {
         private const val TAG = "StorageHelper"
 
+        @JvmStatic
         // first open
         fun setIsFirstOpenAfterDownload(context : Context, activate : Boolean) {
             PreferenceManager.getDefaultSharedPreferences(context)
@@ -22,11 +23,13 @@ class StorageHelper {
                 .apply()
         }
 
+        @JvmStatic
         fun getIsFirstOpenAfterDownload(context : Context) : Boolean {
             return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(FIRST_OPEN_KEY, false)
         }
 
+        @JvmStatic
         // Setting: auto restart
         fun setAutoRestart(context: Context, auto: Boolean) {
             PreferenceManager.getDefaultSharedPreferences(context)
@@ -35,11 +38,13 @@ class StorageHelper {
                 .apply()
         }
 
+        @JvmStatic
         fun getAutoRestart(context: Context) : Boolean{
             return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(AUTO_RESTART_KEY, false)
         }
 
+        @JvmStatic
         // Setting: gravity
         fun setGravity(context: Context, gravity: Gravity) {
             PreferenceManager.getDefaultSharedPreferences(context)
@@ -48,11 +53,13 @@ class StorageHelper {
                 .apply()
         }
 
+        @JvmStatic
         fun getGravity(context: Context) : Gravity {
             return Gravity.valueOf(PreferenceManager.getDefaultSharedPreferences(context)
                     .getString(GRAVITY_KEY, Gravity.BOTTOM.name)!!)
         }
 
+        @JvmStatic
         // Setting: thickness
         fun setThickness(context: Context, thickness: Int) {
             PreferenceManager.getDefaultSharedPreferences(context)
@@ -61,6 +68,7 @@ class StorageHelper {
                 .apply()
         }
 
+        @JvmStatic
         fun getThickness(context: Context) : Int{
             return PreferenceManager.getDefaultSharedPreferences(context)
                 .getInt(THICKNESS_KEY, 5)
