@@ -14,12 +14,14 @@ import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.*;
 import android.widget.LinearLayout;
 import androidx.core.app.NotificationCompat;
 
 import net.rongsonho.brightnessking.R;
 import net.rongsonho.brightnessking.service.util.BrightnessGestureListener;
+import net.rongsonho.brightnessking.setting.ParametersCalculator;
 import net.rongsonho.brightnessking.util.Global;
 import net.rongsonho.brightnessking.util.StorageHelper;
 
@@ -51,6 +53,9 @@ public class BrightnessService extends Service {
 
         // set listeners
         Global.setOnGravityChangedListener(BrightnessService.this::setGravity);
+        Global.setOnThicknessChangedListener(thickness ->
+                BrightnessService.this.setThickness(StorageHelper.getGravity(BrightnessService.this), thickness)
+        );
     }
 
     @Override
@@ -88,6 +93,8 @@ public class BrightnessService extends Service {
         Pair<Integer, Integer> regionSize = getSlidingRegionSize(gravity);
         int regionWidth = regionSize.first;
         int regionHeight = regionSize.second;
+        Log.d(TAG, "width: " + getScreenResolution().first + ", height: " + getScreenResolution().second +
+                ", region width: " + regionWidth + ", region height: " + regionHeight);
 
         // create rect region
         mSlidingRegion = getSlidingRegion(regionWidth, regionHeight, Color.LTGRAY, 0.2f);
@@ -151,24 +158,22 @@ public class BrightnessService extends Service {
         }
     }
 
-    private Pair<Integer, Integer> getSlidingRegionSize() {
-         Pair<Integer, Integer> screenSize = getScreenResolution();
-         int screenWidth = screenSize.first;
-         int screenHeight = screenSize.second;
-         return new Pair<>(screenWidth, screenHeight/30);
-    }
-
     private Pair<Integer, Integer> getSlidingRegionSize(net.rongsonho.brightnessking.setting.data.Gravity gravity) {
         Pair<Integer, Integer> screenSize = getScreenResolution();
         int screenWidth = screenSize.first;
         int screenHeight = screenSize.second;
+        int thickness = ParametersCalculator.getThickness(
+                screenSize,
+                gravity,
+                StorageHelper.getThicknessProgress(this)
+        );
         switch (gravity) {
             case LEFT:
             case RIGHT:
-                return new Pair<>(screenWidth/15, screenHeight);
+                return new Pair<>(thickness, screenHeight);
             case TOP:
             case BOTTOM:
-                return new Pair<>(screenWidth, screenHeight/30);
+                return new Pair<>(screenWidth, thickness);
         }
         return new Pair<>(screenWidth, screenHeight/30);
     }
@@ -213,33 +218,6 @@ public class BrightnessService extends Service {
         }
     }
 
-    // TODO: Implement the change rect width and height part
-    private void changeRectWidth(int widthChanged) {
-        int originalWidth = mSlidingRegion.getMeasuredWidth();
-        int originalHeight = mSlidingRegion.getMeasuredHeight();
-
-        mWindowManager.updateViewLayout(
-                mSlidingRegion,
-                getWindowLayoutParams(
-                        originalWidth + widthChanged,
-                        originalHeight,
-                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL)
-        );
-    }
-
-    private void changeRectHeight(int heightChanged) {
-        int originalWidth = mSlidingRegion.getMeasuredWidth();
-        int originalHeight = mSlidingRegion.getMeasuredHeight();
-
-        mWindowManager.updateViewLayout(
-                mSlidingRegion,
-                getWindowLayoutParams(
-                        originalWidth,
-                        originalHeight + heightChanged,
-                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL)
-        );
-    }
-
     private void setGravity(net.rongsonho.brightnessking.setting.data.Gravity gravity) {
         mWindowManager.updateViewLayout(
                 mSlidingRegion,
@@ -250,6 +228,29 @@ public class BrightnessService extends Service {
         );
 
         mGestureDetector = new GestureDetector(this, new BrightnessGestureListener(this, gravity));
+    }
+
+    private void setThickness(net.rongsonho.brightnessking.setting.data.Gravity gravity, int thickness) {
+        int width, height;
+
+        switch (gravity) {
+            case LEFT:
+            case RIGHT:
+                width = thickness;
+                height = getSlidingRegionSize(gravity).second;
+                break;
+            default:
+                width = getSlidingRegionSize(gravity).first;
+                height = thickness;
+        }
+
+        mWindowManager.updateViewLayout(
+                mSlidingRegion,
+                getWindowLayoutParams(
+                        width,
+                        height,
+                        fromGravityToGravity(gravity))
+        );
     }
 
     private int fromGravityToGravity(net.rongsonho.brightnessking.setting.data.Gravity gravity) {
@@ -272,5 +273,9 @@ public class BrightnessService extends Service {
 
     public interface OnGravityChangedListener {
         void setGravity(net.rongsonho.brightnessking.setting.data.Gravity gravity);
+    }
+
+    public interface OnThicknessChangedListener {
+        void setThickness(int thickness);
     }
 }

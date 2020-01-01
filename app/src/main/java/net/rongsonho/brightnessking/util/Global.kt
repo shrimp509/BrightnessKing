@@ -11,6 +11,7 @@ class Global {
          * Private Variables
          * ****************************/
         private var onGravityChangedListener: BrightnessService.OnGravityChangedListener? = null
+        private var onThicknessChangedListener: BrightnessService.OnThicknessChangedListener? = null
 
         /* ****************************
          * Public APIs
@@ -21,6 +22,14 @@ class Global {
 
         @JvmStatic fun getOnGravityChangedListener() : BrightnessService.OnGravityChangedListener? {
             return onGravityChangedListener
+        }
+
+        @JvmStatic fun setOnThicknessChangedListener(listener: BrightnessService.OnThicknessChangedListener) {
+            this.onThicknessChangedListener = listener
+        }
+
+        @JvmStatic fun getOnThicknessChangedListener() : BrightnessService.OnThicknessChangedListener? {
+            return onThicknessChangedListener
         }
     }
 }

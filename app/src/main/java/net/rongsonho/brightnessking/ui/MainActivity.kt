@@ -24,6 +24,7 @@ import kotlinx.coroutines.launch
 import net.rongsonho.brightnessking.R
 import net.rongsonho.brightnessking.util.StorageHelper
 import net.rongsonho.brightnessking.service.BrightnessService
+import net.rongsonho.brightnessking.setting.data.Gravity
 import net.rongsonho.brightnessking.util.Global
 
 private const val RC_WRITE_SETTING = 0
@@ -252,6 +253,11 @@ class MainActivity : AppCompatActivity() {
                 this,
                 true
             )
+
+            // set default preferences
+            StorageHelper.setAutoRestart(this,false)
+            StorageHelper.setGravity(this, Gravity.BOTTOM)
+            StorageHelper.setThicknessProgress(this, 75)
         }
     }
 }

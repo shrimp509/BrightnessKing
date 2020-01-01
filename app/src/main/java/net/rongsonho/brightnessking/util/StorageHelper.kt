@@ -61,7 +61,7 @@ class StorageHelper {
 
         @JvmStatic
         // Setting: thickness
-        fun setThickness(context: Context, thickness: Int) {
+        fun setThicknessProgress(context: Context, thickness: Int) {
             PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putInt(THICKNESS_KEY, thickness)
@@ -69,7 +69,7 @@ class StorageHelper {
         }
 
         @JvmStatic
-        fun getThickness(context: Context) : Int{
+        fun getThicknessProgress(context: Context) : Int{
             return PreferenceManager.getDefaultSharedPreferences(context)
                 .getInt(THICKNESS_KEY, 5)
         }

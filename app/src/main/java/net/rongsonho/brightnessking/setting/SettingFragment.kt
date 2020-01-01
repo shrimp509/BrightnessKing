@@ -18,8 +18,8 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import net.rongsonho.brightnessking.R
 import net.rongsonho.brightnessking.service.BrightnessService
+import net.rongsonho.brightnessking.setting.ParametersCalculator.Companion.getThickness
 import net.rongsonho.brightnessking.setting.data.Gravity
-import net.rongsonho.brightnessking.ui.MainActivity
 import net.rongsonho.brightnessking.util.Global
 import net.rongsonho.brightnessking.util.StorageHelper
 
@@ -71,7 +71,7 @@ class SettingFragment : Fragment(), View.OnTouchListener {
         dragArea.setOnTouchListener(this)
 
         // check setting items' state
-        checkStates()
+        initPrefStates()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -112,7 +112,7 @@ class SettingFragment : Fragment(), View.OnTouchListener {
             MotionEvent.ACTION_MOVE -> {
                 currentFingerY = event.rawY
                 yDelta = currentFingerY - lastY
-                Log.d(TAG, "onTouch, y: $currentFingerY")
+//                Log.d(TAG, "onTouch, y: $currentFingerY")
 
                 if (currentFingerY >= screenHeight * (1 - SETTING_WHOLE_HEIGHT_RATIO + 0.05f)
                     && currentFingerY <= screenHeight * (1 - SETTING_WHOLE_HEIGHT_RATIO * 0.1f)) {
@@ -141,11 +141,11 @@ class SettingFragment : Fragment(), View.OnTouchListener {
     }
 
     // Check every setting item's state (on or off, stored values)
-    private fun checkStates() {
-        // check auto restart
+    private fun initPrefStates() {
+        // init auto restart
         autoRestartSwitch.isChecked = StorageHelper.getAutoRestart(context!!)
 
-        // set check listener
+        // set auto restart switch listener
         autoRestartSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             StorageHelper.setAutoRestart(context!!, isChecked)
         }
@@ -167,12 +167,30 @@ class SettingFragment : Fragment(), View.OnTouchListener {
             }
         }
 
-        // check gravity
+        // init gravity
         gravitySpinner.setSelection(
             gravityToPosition(
                 StorageHelper.getGravity(context!!)
             )
         )
+
+        // init thickness seekbar
+        thicknessBar.progress = StorageHelper.getThicknessProgress(context!!)
+
+        // set thickness seekbar listener
+        thicknessBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                StorageHelper.setThicknessProgress(context!!, progress)
+
+                if (isMyServiceRunning()) {
+                    Global.getOnThicknessChangedListener()?.setThickness(
+                        getThickness(getScreenResolution()!!, StorageHelper.getGravity(context!!), progress)
+                    )
+                }
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
     }
 
     private fun gravityToPosition(gravity: Gravity) : Int {
@@ -185,7 +203,7 @@ class SettingFragment : Fragment(), View.OnTouchListener {
     }
 
     private fun positionToGravity(position: Int) : Gravity {
-        return when(position) {
+        return when (position) {
             0 -> Gravity.BOTTOM
             1 -> Gravity.RIGHT
             2 -> Gravity.LEFT
