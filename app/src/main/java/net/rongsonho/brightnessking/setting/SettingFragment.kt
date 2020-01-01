@@ -3,6 +3,8 @@ package net.rongsonho.brightnessking.setting
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.util.Pair
@@ -22,6 +24,7 @@ import net.rongsonho.brightnessking.setting.ParametersCalculator.Companion.getTh
 import net.rongsonho.brightnessking.setting.data.Gravity
 import net.rongsonho.brightnessking.util.Global
 import net.rongsonho.brightnessking.util.StorageHelper
+
 
 private const val TAG = "SettingFragment"
 
@@ -157,6 +160,9 @@ class SettingFragment : Fragment(), View.OnTouchListener {
         gravitySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {}    // do nothing
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                // set spinner text color
+                (parent!!.getChildAt(0) as TextView).setTextColor(Color.parseColor("#2A2C2E"))
+
                 // update the gravity
                 StorageHelper.setGravity(context!!, positionToGravity(position))
 
@@ -176,6 +182,10 @@ class SettingFragment : Fragment(), View.OnTouchListener {
 
         // init thickness seekbar
         thicknessBar.progress = StorageHelper.getThicknessProgress(context!!)
+
+        // set seekbar style (thumb color and progress color)
+        thicknessBar.progressDrawable.setColorFilter(Color.parseColor("#A1A3A1"), PorterDuff.Mode.MULTIPLY)
+        thicknessBar.thumb.setColorFilter(Color.parseColor("#45494C"), PorterDuff.Mode.SRC_IN)
 
         // set thickness seekbar listener
         thicknessBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {

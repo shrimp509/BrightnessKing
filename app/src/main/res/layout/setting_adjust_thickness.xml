@@ -24,25 +24,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="厚度: "
+            android:text="厚度"
             android:textColor="#2A2C2E"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/left_005_guideline"
             app:layout_constraintTop_toBottomOf="@+id/setting_item_adjust_thickness_item_title"
             app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-            android:id="@+id/setting_item_adjust_thickness_item_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:text="5"
-            android:textColor="#2A2C2E"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/setting_item_adjust_thickness_item_subtitle"
-            app:layout_constraintStart_toEndOf="@+id/setting_item_adjust_thickness_item_subtitle"
-            app:layout_constraintTop_toTopOf="@+id/setting_item_adjust_thickness_item_subtitle" />
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/left_005_guideline"

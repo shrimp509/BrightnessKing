@@ -29,7 +29,7 @@
     </style>
 
     <style name="SettingSwitch" parent="Theme.AppCompat.Light">
-        <item name="colorControlActivated">#46bdbf</item>
+        <item name="colorControlActivated">#474B4E</item>
         <item name="colorSwitchThumbNormal">#f1f1f1</item>
         <item name="android:colorForeground">#42221f1f</item>
     </style>
