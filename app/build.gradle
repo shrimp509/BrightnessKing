@@ -6,10 +6,10 @@ apply plugin: 'io.fabric'
 apply plugin: 'kotlin-kapt'
 
 ext {
-    //  1.2.0
+    //  1.2.1
     versionMajor = 1
     versionMinor = 2
-     versionPatch = 0
+     versionPatch = 1
 
     versionBuild = 0
 }
