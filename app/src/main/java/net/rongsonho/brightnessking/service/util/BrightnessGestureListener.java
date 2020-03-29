@@ -11,6 +11,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import net.rongsonho.brightnessking.setting.data.Gravity;
+import net.rongsonho.brightnessking.util.StorageHelper;
 
 public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureListener {
     private static final String TAG = BrightnessGestureListener.class.getSimpleName();
@@ -107,14 +108,19 @@ public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureLi
         this.gravity = gravity;
     }
 
+    /*
+     * Set vibration
+     */
     private void vibrate(int millis) {
-        Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        if (v == null) return;
+        if (StorageHelper.getVibration(context)) {
+            Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            if (v == null) return;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            v.vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE));
-        } else {
-            v.vibrate(millis);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                v.vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                v.vibrate(millis);
+            }
         }
     }
 }
