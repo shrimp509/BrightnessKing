@@ -2,11 +2,16 @@ package net.rongsonho.brightnessking.service.util;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.os.Build;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import net.rongsonho.brightnessking.setting.data.Gravity;
+import net.rongsonho.brightnessking.util.StorageHelper;
 
 public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureListener {
     private static final String TAG = BrightnessGestureListener.class.getSimpleName();
@@ -69,6 +74,23 @@ public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureLi
         if (changedBrightness > 0 && changedBrightness <= 255){
             Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, changedBrightness);
         }
+
+        // vibrate with brightness level
+        if (changedBrightness >  255) {
+            vibrate(200);
+        } else if (changedBrightness >= 200 && changedBrightness < 255) {
+            vibrate(20);
+        } else if (changedBrightness >= 150 && changedBrightness < 200) {
+            vibrate(15);
+        } else if (changedBrightness >= 100 && changedBrightness < 150) {
+            vibrate(10);
+        } else if (changedBrightness >= 50 && changedBrightness < 100) {
+            vibrate(8);
+        } else if (changedBrightness < 50 && changedBrightness >= 0) {
+            vibrate(5);
+        } else if (changedBrightness < 0) {
+            vibrate(200);
+        }
     }
 
     /*
@@ -83,5 +105,21 @@ public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureLi
 
     public void setGravity(Gravity gravity) {
         this.gravity = gravity;
+    }
+
+    /*
+     * Set vibration
+     */
+    private void vibrate(int millis) {
+        if (StorageHelper.getVibration(context)) {
+            Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            if (v == null) return;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                v.vibrate(VibrationEffect.createOneShot(millis, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                v.vibrate(millis);
+            }
+        }
     }
 }

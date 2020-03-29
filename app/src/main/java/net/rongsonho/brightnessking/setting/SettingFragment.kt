@@ -25,7 +25,6 @@ import net.rongsonho.brightnessking.setting.data.Gravity
 import net.rongsonho.brightnessking.util.Global
 import net.rongsonho.brightnessking.util.StorageHelper
 
-
 private const val TAG = "SettingFragment"
 
 class SettingFragment : Fragment(), View.OnTouchListener {
@@ -55,6 +54,7 @@ class SettingFragment : Fragment(), View.OnTouchListener {
     @BindView(R.id.setting_item_auto_restart_item_switch) lateinit var autoRestartSwitch : SwitchCompat
     @BindView(R.id.setting_item_choose_gravity_item_spinner) lateinit var gravitySpinner : Spinner
     @BindView(R.id.setting_item_adjust_thickness_item_seekbar) lateinit var thicknessBar : SeekBar
+    @BindView(R.id.setting_item_vibration_item_switch) lateinit var vibrationSwitch: SwitchCompat
 
     /* **************************
      * Initialization
@@ -201,6 +201,14 @@ class SettingFragment : Fragment(), View.OnTouchListener {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
+
+        // init vibration
+        vibrationSwitch.isChecked = StorageHelper.getVibration(context!!)
+
+        // set vibration switch listener
+        vibrationSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            StorageHelper.setVibration(context!!, isChecked)
+        }
     }
 
     private fun gravityToPosition(gravity: Gravity) : Int {

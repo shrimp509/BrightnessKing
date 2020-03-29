@@ -8,11 +8,15 @@ private const val FIRST_OPEN_KEY = "is_first_open_after_download"
 private const val AUTO_RESTART_KEY = "auto_restart_brightness_service"
 private const val THICKNESS_KEY = "thickness"
 private const val GRAVITY_KEY = "gravity"
+private const val VIBRATION_KEY = "vibration"
 
 class StorageHelper {
 
     companion object {
         private const val TAG = "StorageHelper"
+
+        // Cache of vibration setting
+        private var vibrationCache = false
 
         @JvmStatic
         // first open
@@ -39,7 +43,7 @@ class StorageHelper {
         }
 
         @JvmStatic
-        fun getAutoRestart(context: Context) : Boolean{
+        fun getAutoRestart(context: Context) : Boolean {
             return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(AUTO_RESTART_KEY, false)
         }
@@ -69,9 +73,28 @@ class StorageHelper {
         }
 
         @JvmStatic
-        fun getThicknessProgress(context: Context) : Int{
+        fun getThicknessProgress(context: Context) : Int {
             return PreferenceManager.getDefaultSharedPreferences(context)
                 .getInt(THICKNESS_KEY, 5)
         }
+
+        @JvmStatic
+        // Setting: Vibration
+        fun setVibration(context: Context, enable: Boolean) {
+            PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(VIBRATION_KEY, enable)
+                .apply()
+
+            vibrationCache = enable
+        }
+
+        @JvmStatic
+        fun getVibration(context: Context) : Boolean {
+            return vibrationCache
+//            return PreferenceManager.getDefaultSharedPreferences(context)
+//                .getBoolean(VIBRATION_KEY, false)
+        }
+
     }
 }

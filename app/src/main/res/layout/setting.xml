@@ -67,4 +67,14 @@
             app:layout_constraintStart_toStartOf="@+id/left_015_guideline"
             app:layout_constraintTop_toBottomOf="@+id/setting_item_auto_restart" />
 
+    <include
+            android:id="@+id/setting_item_vibration"
+            layout="@layout/setting_vibration"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:layout_constraintEnd_toStartOf="@+id/left_085_guideline"
+            app:layout_constraintStart_toStartOf="@+id/left_015_guideline"
+            app:layout_constraintTop_toBottomOf="@+id/setting_item_adjust_thickness" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
