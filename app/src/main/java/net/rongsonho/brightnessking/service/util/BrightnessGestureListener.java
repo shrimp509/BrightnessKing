@@ -76,7 +76,6 @@ public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureLi
         }
 
         // vibrate with brightness level
-        Log.d(TAG, "current brightness: " + changedBrightness);
         if (changedBrightness >  255) {
             vibrate(200);
         } else if (changedBrightness >= 200 && changedBrightness < 255) {

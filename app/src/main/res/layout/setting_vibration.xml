@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="啟動震動指示效果"
+            android:text="啟動震動提示"
             android:textColor="#2A2C2E"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"

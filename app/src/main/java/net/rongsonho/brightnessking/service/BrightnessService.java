@@ -53,9 +53,9 @@ public class BrightnessService extends Service {
 
         // set listeners
         Global.setOnGravityChangedListener(BrightnessService.this::setGravity);
-        Global.setOnThicknessChangedListener(thickness ->
-                BrightnessService.this.setThickness(StorageHelper.getGravity(BrightnessService.this), thickness)
-        );
+        Global.setOnThicknessChangedListener(thickness -> {
+            BrightnessService.this.setThickness(StorageHelper.getGravity(BrightnessService.this), thickness);
+        });
     }
 
     @Override

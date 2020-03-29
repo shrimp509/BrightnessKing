@@ -43,7 +43,7 @@ class StorageHelper {
         }
 
         @JvmStatic
-        fun getAutoRestart(context: Context) : Boolean{
+        fun getAutoRestart(context: Context) : Boolean {
             return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(AUTO_RESTART_KEY, false)
         }
@@ -73,7 +73,7 @@ class StorageHelper {
         }
 
         @JvmStatic
-        fun getThicknessProgress(context: Context) : Int{
+        fun getThicknessProgress(context: Context) : Int {
             return PreferenceManager.getDefaultSharedPreferences(context)
                 .getInt(THICKNESS_KEY, 5)
         }
@@ -90,7 +90,7 @@ class StorageHelper {
         }
 
         @JvmStatic
-        fun getVibration(context: Context) : Boolean{
+        fun getVibration(context: Context) : Boolean {
             return vibrationCache
 //            return PreferenceManager.getDefaultSharedPreferences(context)
 //                .getBoolean(VIBRATION_KEY, false)
