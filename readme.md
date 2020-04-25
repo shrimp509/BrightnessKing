@@ -13,8 +13,9 @@ You can download this android app [here](https://play.google.com/store/apps/deta
 * Swipe up, down, left, right four directions on the brightness bar to feel the differences
 * You can close the app and Enjoy the brightness service
 
-Video: [https://www.youtube.com/watch?v=9vQCDuek-m8](https://www.youtube.com/watch?v=9vQCDuek-m8)
-![video_cover](https://github.com/shrimp509/BrightnessKing/blob/master/screenshots/video_cover.png)
+Video:
+
+[![video_cover](https://github.com/shrimp509/BrightnessKing/blob/master/screenshots/video_cover.jpg)](https://www.youtube.com/watch?v=9vQCDuek-m8)
 
 ## Troubleshooting
 
