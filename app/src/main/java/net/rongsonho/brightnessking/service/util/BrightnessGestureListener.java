@@ -15,6 +15,13 @@ import net.rongsonho.brightnessking.util.StorageHelper;
 
 public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureListener {
     private static final String TAG = BrightnessGestureListener.class.getSimpleName();
+    private static final int MAX_BRIGHTNESS_NORMAL = 255;
+    private static final int BRIGHTNESS_MULTIPLIER_NORMAL = 1;
+    private static final int MAX_BRIGHTNESS_DELTA_NORMAL = 10;
+
+    private static final int MAX_BRIGHTNESS_XIAOMI = 4000;
+    private static final int BRIGHTNESS_MULTIPLIER_XIAOMI = 16;    // 4000/255 = 15.x
+    private static final int MAX_BRIGHTNESS_DELTA_XIAOMI = MAX_BRIGHTNESS_DELTA_NORMAL * BRIGHTNESS_MULTIPLIER_XIAOMI;
 
     private float deltaX = 0, deltaY = 0;
     private Context context;
@@ -39,6 +46,7 @@ public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureLi
         switch (gravity) {
             case TOP:
             case BOTTOM:
+                Log.d(TAG, "top/bottom, adjust brightness, " + deltaX);
                 deltaX = distanceX;
                 setBrightness(context, -deltaX);
                 break;
@@ -57,51 +65,25 @@ public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureLi
      */
     private void setBrightness(Context context, float brightnessDelta) {
         ContentResolver contentResolver = context.getContentResolver();
-        float nowBrightness = 0;
-        try{
-            nowBrightness = Settings.System.getFloat(contentResolver, Settings.System.SCREEN_BRIGHTNESS);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
 
-        // avoid adjusting brightness too much
-        if (brightnessDelta > 10){
-            brightnessDelta = 10;
-        }
+        // get parameter brightness with different devices
+        int multiplier = getMultiplierWithManufacturer();
+        int maxBrightness = getMaxBrightnessWithManufacturer();
+        int maxDelta = getMaxDeltaWithManufacturer();
 
-        int changedBrightness = (int)(nowBrightness + brightnessDelta);
+        // brightness calculation
+        int changedBrightness = getBrightness(contentResolver, brightnessDelta,
+                multiplier, maxDelta);
 
-        if (changedBrightness > 0 && changedBrightness <= 255){
+        // actually adjust brightness through system api
+        if (changedBrightness > 0 && changedBrightness <= maxBrightness) {
             Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, changedBrightness);
         }
 
-        // vibrate with brightness level
-        if (changedBrightness >  255) {
-            vibrate(200);
-        } else if (changedBrightness >= 200 && changedBrightness < 255) {
-            vibrate(20);
-        } else if (changedBrightness >= 150 && changedBrightness < 200) {
-            vibrate(15);
-        } else if (changedBrightness >= 100 && changedBrightness < 150) {
-            vibrate(10);
-        } else if (changedBrightness >= 50 && changedBrightness < 100) {
-            vibrate(8);
-        } else if (changedBrightness < 50 && changedBrightness >= 0) {
-            vibrate(5);
-        } else if (changedBrightness < 0) {
-            vibrate(200);
-        }
+        // vibrate
+        vibrateWithBrightnessLevel(changedBrightness, maxBrightness);
     }
 
-    /*
-     * Set exactly brightness value
-     */
-    private void setBrightness(Context context, int brightness) {
-        ContentResolver contentResolver = context.getContentResolver();
-        if (brightness > 0 && brightness <= 255){
-            Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, brightness);
-        }
-    }
 
     public void setGravity(Gravity gravity) {
         this.gravity = gravity;
@@ -121,5 +103,71 @@ public class BrightnessGestureListener extends GestureDetector.SimpleOnGestureLi
                 v.vibrate(millis);
             }
         }
+    }
+
+    private void vibrateWithBrightnessLevel(int brightness, int maxBrightness) {
+        // vibrate with brightness level
+        if (brightness >  maxBrightness) {
+            vibrate(200);
+        } else if (brightness >= (maxBrightness * 0.8) && brightness < maxBrightness) {
+            vibrate(20);
+        } else if (brightness >= (maxBrightness * 0.6) && brightness < (maxBrightness * 0.8)) {
+            vibrate(15);
+        } else if (brightness >= (maxBrightness * 0.4) && brightness < (maxBrightness * 0.6)) {
+            vibrate(10);
+        } else if (brightness >= (maxBrightness * 0.2) && brightness < (maxBrightness * 0.4)) {
+            vibrate(8);
+        } else if (brightness < (maxBrightness * 0.2) && brightness >= 0) {
+            vibrate(5);
+        } else if (brightness < 0) {
+            vibrate(200);
+        }
+    }
+
+    private int getMultiplierWithManufacturer() {
+        if ("xiaomi".equals(Build.MANUFACTURER.toLowerCase())) {
+            return BRIGHTNESS_MULTIPLIER_XIAOMI;
+        }
+
+        return BRIGHTNESS_MULTIPLIER_NORMAL;
+    }
+
+    private int getMaxBrightnessWithManufacturer() {
+        if ("xiaomi".equals(Build.MANUFACTURER.toLowerCase())) {
+            return MAX_BRIGHTNESS_XIAOMI;
+        }
+
+        return MAX_BRIGHTNESS_NORMAL;
+    }
+
+    private int getMaxDeltaWithManufacturer() {
+        if ("xiaomi".equals(Build.MANUFACTURER.toLowerCase())) {
+            return MAX_BRIGHTNESS_DELTA_XIAOMI;
+        }
+
+        return MAX_BRIGHTNESS_DELTA_NORMAL;
+    }
+
+    private float getCurrentBrightness(ContentResolver contentResolver) {
+        float nowBrightness = 0;
+        try{
+            nowBrightness = Settings.System.getFloat(contentResolver, Settings.System.SCREEN_BRIGHTNESS);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return nowBrightness;
+    }
+
+    private int getBrightness(ContentResolver contentResolver, float brightnessDelta, int multiplier, int maxDelta) {
+        float nowBrightness = getCurrentBrightness(contentResolver);
+
+        brightnessDelta *= multiplier;
+
+        // avoid adjusting brightness too much
+        if (brightnessDelta > maxDelta) {
+            brightnessDelta = maxDelta;
+        }
+
+        return (int)(nowBrightness + brightnessDelta);
     }
 }
