@@ -58,3 +58,4 @@ Steps:
 * `2020-03-03`: Launch `v1.2.1`, Fix some bugs
 * `2020-04-25`: Launch `v1.2.2`, Add `Vibration` when adjusting brightness
 * `2020-04-25`: Open source at [Github](https://github.com/shrimp509/BrightnessKing)
+* `2020-05-06`: Launch `v1.2.3`, Fix bug: support redmi/xiaomi devices
