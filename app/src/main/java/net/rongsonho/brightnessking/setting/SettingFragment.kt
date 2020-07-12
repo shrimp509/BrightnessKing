@@ -3,8 +3,11 @@ package net.rongsonho.brightnessking.setting
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.Pair
@@ -18,6 +21,7 @@ import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
+import net.rongsonho.brightnessking.BuildConfig
 import net.rongsonho.brightnessking.R
 import net.rongsonho.brightnessking.service.BrightnessService
 import net.rongsonho.brightnessking.setting.ParametersCalculator.Companion.getThickness
@@ -34,6 +38,7 @@ class SettingFragment : Fragment(), View.OnTouchListener {
      * **************************/
     companion object {
         private const val SETTING_WHOLE_HEIGHT_RATIO = 0.8f
+        private const val REPORT_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfxYMs4A3Q2kg8zDV0c2iLQQZ3Ex2n-RZ1ESUuwHoKZoLtlyQ/viewform?"
     }
 
     /* **************************
@@ -55,6 +60,7 @@ class SettingFragment : Fragment(), View.OnTouchListener {
     @BindView(R.id.setting_item_choose_gravity_item_spinner) lateinit var gravitySpinner : Spinner
     @BindView(R.id.setting_item_adjust_thickness_item_seekbar) lateinit var thicknessBar : SeekBar
     @BindView(R.id.setting_item_vibration_item_switch) lateinit var vibrationSwitch: SwitchCompat
+    @BindView(R.id.setting_item_report_item_goto) lateinit var reportBtn: TextView
 
     /* **************************
      * Initialization
@@ -208,6 +214,15 @@ class SettingFragment : Fragment(), View.OnTouchListener {
         // set vibration switch listener
         vibrationSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             StorageHelper.setVibration(context!!, isChecked)
+        }
+
+        // set report btn
+        reportBtn.setOnClickListener {
+            Toast.makeText(context, "正在打開瀏覽器...", Toast.LENGTH_SHORT).show()
+
+            val openURL = Intent(Intent.ACTION_VIEW)
+            openURL.data = Uri.parse(REPORT_URL + "entry.11547474=${BuildConfig.VERSION_NAME}&entry.1484421761=${android.os.Build.VERSION.SDK_INT}&entry.1788770952=${Build.MANUFACTURER} ${Build.MODEL}")
+            startActivity(openURL)
         }
     }
 
