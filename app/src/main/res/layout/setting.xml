@@ -18,11 +18,11 @@
             app:layout_constraintVertical_bias="0.0"></LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/top_015_guideline"
+            android:id="@+id/top_012_guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.15" />
+            app:layout_constraintGuide_percent="0.12" />
 
     <androidx.constraintlayout.widget.Guideline
             android:id="@+id/left_015_guideline"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@+id/left_085_guideline"
             app:layout_constraintStart_toStartOf="@+id/left_015_guideline"
-            app:layout_constraintTop_toTopOf="@+id/top_015_guideline" />
+            app:layout_constraintTop_toTopOf="@+id/top_012_guideline" />
 
     <include
             android:id="@+id/setting_item_adjust_thickness"
